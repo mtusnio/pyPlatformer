@@ -20,5 +20,6 @@ while True:
     gameScene.simulate_preframe(dt)
     gameRenderer.render(gameScene)
     gameScene.simulate_postframe(dt)
+    pygame.display.flip()
 
     lastClock = time.clock()

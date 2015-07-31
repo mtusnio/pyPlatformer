@@ -12,10 +12,10 @@ class Renderer(object):
         """
         self.screen.fill((0, 0, 0))
 
-        for obj in scene.objects:
+        for obj in scene.objects.values():
             sprites = obj.getcomponents(SpriteRenderer)
             for spr in sprites:
                 self._rendersprite(spr)
 
     def _rendersprite(self, sprite):
-        self.screen.blit(sprite.image)
+        self.screen.blit(sprite.image, sprite.image.get_rect())

@@ -7,7 +7,7 @@ class GameObject(object):
         """
         :param component: Component list to add
         """
-        self.components.add(components)
+        self.components.add(*components)
         for cmp in components:
             cmp.gameobject = self
 

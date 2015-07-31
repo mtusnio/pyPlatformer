@@ -6,10 +6,8 @@ pygame.init()
 
 width, height = 1440, 900
 
-pygame.display.set_mode((width,height))
-
 gameScene = scene.Scene()
-gameRenderer = renderer.Renderer()
+gameRenderer = renderer.Renderer(pygame.display.set_mode((width,height)))
 
 lastClock = time.clock()
 while True:

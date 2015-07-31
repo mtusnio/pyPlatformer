@@ -5,6 +5,6 @@ class Renderer(object):
     def render(self, scene):
         """
         Renders current state of scene
-        :param scene: engine.scene.Scene
+        :param engine.scene.Scene scene: engine.scene.Scene
         """
         pass

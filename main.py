@@ -13,17 +13,17 @@ spriteObj = gameobject.GameObject()
 spriteObj.addcomponents(components.SpriteRenderer(path="assets\sprite.png"), components.Transform())
 gameScene.addobject(spriteObj)
 
-lastClock = time.clock()
+
+clock = pygame.time.Clock()
 while True:
+    lastClock = clock.tick()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
 
-    dt = time.clock() - lastClock
+    dt = lastClock / 1000.0
 
     gameScene.simulate_preframe(dt)
     gameRenderer.render(gameScene)
     gameScene.simulate_postframe(dt)
     pygame.display.flip()
-
-    lastClock = time.clock()

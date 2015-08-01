@@ -84,6 +84,14 @@ class TestGameObjectComponents(unittest.TestCase):
     def test_removemultiple(self):
         self._test_remove_components(self._get_obj_with_components(), 3)
 
+    def test_gameobjectchanged(self):
+        import itertools
+        obj = self._get_obj_with_components()
+        self.assertEqual(len(obj.components), len(list(itertools.ifilter(lambda x: x.gameobject == obj, obj.components))))
+        removedComponents = list(obj.components)
+        obj.removecomponents(*obj.components)
+        self.assertEqual(len(removedComponents), len(list(itertools.ifilter(lambda x: x.gameobject == None, removedComponents))))
+
     def _test_remove_components(self, obj, count):
         components = list(obj.components)[0:count]
         length = len(obj.components)

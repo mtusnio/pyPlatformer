@@ -31,6 +31,23 @@ class GameObject(object):
                 ret.append(cmp)
         return ret
 
+    def getcomponent(self, cls):
+        """
+        Returns first found component of specified class
+        :param cls: Class of component to return
+        :return: First component that matches the class, None if none found
+        """
+        components = self.getcomponents(cls);
+        return components[0] if len(components) > 0 else None
+
+    def hascomponent(self, cls):
+        """
+        Returns true if the object has the specified component
+        :param cls: Class of component to check
+        :return boolean: true if object has this component
+        """
+        return len(self.getcomponents(cls) > 0)
+
     def update(self):
         """
         Runs object simulation before rendering

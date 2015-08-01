@@ -1,5 +1,6 @@
 import pygame
-from components.spriterenderer import SpriteRenderer
+import components
+import copy
 
 class Renderer(object):
     def __init__(self, screen):
@@ -13,9 +14,15 @@ class Renderer(object):
         self.screen.fill((0, 0, 0))
 
         for obj in scene.objects.values():
-            sprites = obj.getcomponents(SpriteRenderer)
+            sprites = obj.getcomponents(components.SpriteRenderer)
             for spr in sprites:
-                self._rendersprite(spr)
+                if spr.image is not None:
+                    self._rendersprite(spr)
 
     def _rendersprite(self, sprite):
-        self.screen.blit(sprite.image, sprite.image.get_rect())
+        objtransform = sprite.gameobject.getcomponent(components.Transform)
+        if objtransform is None:
+            self.screen.blit(sprite.image, sprite.image.get_rect())
+        else:
+            surface = pygame.transform.rotozoom(copy.copy(sprite.image), objtransform.rotation, objtransform.scale)
+            self.screen.blit(surface, surface.get_rect(center=objtransform.position))

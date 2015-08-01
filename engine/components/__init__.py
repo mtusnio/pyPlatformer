@@ -1,5 +1,5 @@
 __author__ = 'Maverick'
 
-from . import basecomponent
-from . import spriterenderer
-from . import transform
+from basecomponent import BaseComponent
+from spriterenderer import SpriteRenderer
+from transform import Transform

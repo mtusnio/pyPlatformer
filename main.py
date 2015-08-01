@@ -10,7 +10,7 @@ gameScene = scene.Scene()
 gameRenderer = renderer.Renderer(pygame.display.set_mode((width,height)))
 
 spriteObj = gameobject.GameObject()
-spriteObj.addcomponents(components.SpriteRenderer(path="assets\sprite.jpg"), components.Transform())
+spriteObj.addcomponents(components.SpriteRenderer(path="assets\sprite.png"), components.Transform())
 gameScene.addobject(spriteObj)
 
 lastClock = time.clock()

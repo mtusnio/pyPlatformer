@@ -5,6 +5,7 @@ class Scene(object):
     def __init__(self):
         self.objects = collections.OrderedDict()
         self.maxIndex = 0
+        self.camera = None
 
     def addobject(self, obj):
         """

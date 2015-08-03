@@ -2,10 +2,11 @@ import collections
 
 
 class Scene(object):
-    def __init__(self):
+    def __init__(self, game):
         self.objects = collections.OrderedDict()
         self.camera = None
         self.dt = 0
+        self.game = game
         self._maxIndex = 0
 
     def addobject(self, obj):

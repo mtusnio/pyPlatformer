@@ -2,6 +2,7 @@ class GameObject(object):
     def __init__(self):
         self.components = set()
         self.scene = None
+        self.id = None
 
     def addcomponents(self, *components):
         """

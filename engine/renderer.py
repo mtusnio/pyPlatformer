@@ -17,19 +17,19 @@ class Renderer(object):
 
         cameraposition = (math.Vector2(0, 0), 0)
         if scene.camera is not None:
-            camera = scene.camera.getcomponent(components.Camera)
-            transform = scene.camera.getcomponent(components.Transform)
+            camera = scene.camera.get_component(components.Camera)
+            transform = scene.camera.get_component(components.Transform)
             if transform is not None:
                 cameraposition = (transform.position, transform.rotation)
 
         for obj in scene.objects.values():
-            sprites = obj.getcomponents(components.SpriteRenderer)
+            sprites = obj.get_components(components.SpriteRenderer)
             for spr in sprites:
                 if spr.image is not None:
-                    self._rendersprite(spr, cameraposition)
+                    self._render_sprite(spr, cameraposition)
 
-    def _rendersprite(self, sprite, cameraposition):
-        objtransform = sprite.gameobject.getcomponent(components.Transform)
+    def _render_sprite(self, sprite, cameraposition):
+        objtransform = sprite.gameobject.get_component(components.Transform)
         if objtransform is None:
             self.screen.blit(sprite.image, sprite.image.get_rect())
         else:

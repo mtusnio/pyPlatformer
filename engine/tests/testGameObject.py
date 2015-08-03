@@ -19,7 +19,7 @@ class TestGameObjectComponents(unittest.TestCase):
 
     def test_noadd(self):
         obj = GameObject()
-        obj.addcomponents()
+        obj.add_components()
 
         self.assertEqual(len(obj.components), 0)
 
@@ -27,8 +27,8 @@ class TestGameObjectComponents(unittest.TestCase):
         import engine.components
         obj = GameObject()
         newList = self.testComponents + [engine.components.BaseComponent()]
-        obj.addcomponents(*self.testComponents)
-        obj.addcomponents(*newList)
+        obj.add_components(*self.testComponents)
+        obj.add_components(*newList)
 
         self.assertEqual(len(obj.components), len(newList))
         self.assertEqual(set(newList), obj.components)
@@ -47,16 +47,16 @@ class TestGameObjectComponents(unittest.TestCase):
         import engine.components
         obj = GameObject()
         testcomponent = engine.components.SpriteRenderer()
-        obj.addcomponents(testcomponent)
+        obj.add_components(testcomponent)
 
-        self.assertEqual(len(obj.getcomponents(engine.components.BaseComponent)), len(obj.components))
-        self.assertEqual(testcomponent, obj.getcomponents(engine.components.SpriteRenderer)[0])
+        self.assertEqual(len(obj.get_components(engine.components.BaseComponent)), len(obj.components))
+        self.assertEqual(testcomponent, obj.get_components(engine.components.SpriteRenderer)[0])
 
     def _test_remove_components(self, obj, count):
         import itertools
         components = list(obj.components)[0:count]
         length = len(obj.components)
-        obj.removecomponents(*components)
+        obj.remove_components(*components)
 
         self.assertEqual(len(obj.components), length - count)
         self.assertSetEqual(obj.components & set(components), set())
@@ -64,5 +64,5 @@ class TestGameObjectComponents(unittest.TestCase):
 
     def _get_obj_with_components(self):
         obj = GameObject()
-        obj.addcomponents(*self.testComponents)
+        obj.add_components(*self.testComponents)
         return obj

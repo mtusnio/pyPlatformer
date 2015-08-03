@@ -44,7 +44,7 @@ class Game(object):
 
             dt = 1/clock.get_fps() if clock.get_fps() != 0 else 0.16
 
-            self.scene.setupframe(dt)
+            self.scene.setup_frame(dt)
             self.scene.simulate_preframe()
             self.renderer.render(self.scene)
             self.scene.simulate_postframe()

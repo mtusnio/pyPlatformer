@@ -9,7 +9,7 @@ class Scene(object):
         self.game = game
         self._maxIndex = 0
 
-    def addobject(self, obj):
+    def add_object(self, obj):
         """
         Adds a new object to the scene and changes its scene & id variables
         :param engine.gameobject.GameObject obj: Game object to add to the scene
@@ -22,7 +22,7 @@ class Scene(object):
         self._maxIndex += 1
         obj.scene = self
 
-    def removeobject(self, obj):
+    def remove_object(self, obj):
         """
         Removes an object from the scene, reverts the scene & id variables to None
         :param engine.gameobject.GameObject obj: Game object to remove from the scene
@@ -34,7 +34,7 @@ class Scene(object):
         obj.scene = None
         obj.id = None
 
-    def setupframe(self, dt):
+    def setup_frame(self, dt):
         """
         Performs initial setup needed before every frame
         :param float dt: Time (in seconds) passed since the previous frame

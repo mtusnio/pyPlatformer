@@ -1,7 +1,7 @@
 from engine.gameobject import GameObject
 import engine.components
 import unittest
-
+import engine.components
 
 class TestGameObjectComponents(unittest.TestCase):
     def setUp(self):
@@ -24,7 +24,6 @@ class TestGameObjectComponents(unittest.TestCase):
         self.assertEqual(len(obj.components), 0)
 
     def test_addexisting(self):
-        import engine.components
         obj = GameObject()
         newList = self.testComponents + [engine.components.BaseComponent()]
         obj.add_components(*self.testComponents)
@@ -44,13 +43,20 @@ class TestGameObjectComponents(unittest.TestCase):
         self._test_remove_components(obj, len(obj.components))
 
     def test_getcomponents(self):
-        import engine.components
         obj = GameObject()
         testcomponent = engine.components.SpriteRenderer()
         obj.add_components(testcomponent)
 
         self.assertEqual(len(obj.get_components(engine.components.BaseComponent)), len(obj.components))
         self.assertEqual(testcomponent, obj.get_components(engine.components.SpriteRenderer)[0])
+
+    def test_hascomponent(self):
+        obj = GameObject()
+        self.assertFalse(obj.has_component(engine.components.BaseComponent))
+        obj.add_components(engine.components.Transform(), engine.components.SpriteRenderer())
+        self.assertFalse(obj.has_component(engine.components.Camera))
+        self.assertTrue(obj.has_component(engine.components.SpriteRenderer))
+        self.assertTrue(obj.has_component(engine.components.BaseComponent))
 
     def _test_remove_components(self, obj, count):
         import itertools

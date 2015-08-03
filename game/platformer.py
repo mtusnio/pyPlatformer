@@ -10,10 +10,10 @@ class Platformer(Game):
         super(self.__class__, self).init(width, height)
         self.scene = Scene(self)
 
-        spriteobj = GameObject()
-        spriteobj.addcomponents(components.SpriteRenderer(path="assets\sprite.png"), components.Transform())
-        self.scene.addobject(spriteobj)
+        sprite_obj = GameObject()
+        sprite_obj.add_components(components.SpriteRenderer(path="assets\sprite.png"), components.Transform())
+        self.scene.add_object(sprite_obj)
 
         self.scene.camera = GameObject()
-        self.scene.camera.addcomponents(components.Transform(), components.Camera())
-        self.scene.addobject(self.scene.camera)
+        self.scene.camera.add_components(components.Transform(), components.Camera())
+        self.scene.add_object(self.scene.camera)

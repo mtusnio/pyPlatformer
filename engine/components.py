@@ -5,7 +5,7 @@ from engine import math
 
 class BaseComponent(object):
     def __init__(self, **kwargs):
-        self.gameobject = None
+        self.game_object = None
 
 
 class Camera(BaseComponent):

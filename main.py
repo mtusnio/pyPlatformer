@@ -1,5 +1,4 @@
 import sys, pygame
-import time
 from engine import scene, renderer, gameobject, components
 
 pygame.init()
@@ -13,6 +12,10 @@ spriteObj = gameobject.GameObject()
 spriteObj.addcomponents(components.SpriteRenderer(path="assets\sprite.png"), components.Transform())
 gameScene.addobject(spriteObj)
 
+cameraObj = gameobject.GameObject()
+cameraObj.addcomponents(components.Transform(), components.Camera())
+gameScene.addobject(cameraObj)
+scene.camera = cameraObj
 
 clock = pygame.time.Clock()
 while True:

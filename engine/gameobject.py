@@ -38,7 +38,7 @@ class GameObject(object):
         :param cls: Class of component to return
         :return: First component that matches the class, None if none found
         """
-        components = self.get_components(cls);
+        components = self.get_components(cls)
         return components[0] if len(components) > 0 else None
 
     def has_component(self, cls):
@@ -47,7 +47,7 @@ class GameObject(object):
         :param cls: Class of component to check
         :return boolean: true if object has this component
         """
-        return len(self.get_components(cls) > 0)
+        return len(self.get_components(cls)) > 0
 
     def update(self):
         """

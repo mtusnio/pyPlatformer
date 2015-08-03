@@ -3,7 +3,7 @@ from engine import Scene, GameObject
 
 class TestSceneObjects(unittest.TestCase):
     def test_addobjects(self):
-        scene = Scene()
+        scene = Scene(None)
         objects = [GameObject() for x in xrange(0, 10)]
         for obj in objects:
             scene.add_object(obj)
@@ -20,7 +20,7 @@ class TestSceneObjects(unittest.TestCase):
             scene.add_object(objects[0])
 
     def test_removeobject(self):
-        scene = Scene()
+        scene = Scene(None)
 
         objects = [GameObject() for x in xrange(0, 10)]
         for obj in objects:

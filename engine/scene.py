@@ -5,6 +5,7 @@ class Scene(object):
     def __init__(self):
         self.objects = collections.OrderedDict()
         self.camera = None
+        self.dt = 0
         self._maxIndex = 0
 
     def addobject(self, obj):
@@ -32,16 +33,25 @@ class Scene(object):
         obj.scene = None
         obj.id = None
 
-    def simulate_preframe(self, dt):
+    def setupframe(self, dt):
+        """
+        Performs initial setup needed before every frame
+        :param float dt: Time (in seconds) passed since the previous frame
+        """
+        self.dt = dt
+
+    def simulate_preframe(self):
         """
         Renders a frame before rendering is done
         :param float dt: Frametime
         """
-        pass
+        for obj in self.objects.values():
+            obj.update()
 
-    def simulate_postframe(self, dt):
+    def simulate_postframe(self):
         """
         Renders a frame after rendering is done
         :param float dt: Frametime
         """
-        pass
+        for obj in self.objects.values():
+            obj.update_postframe()

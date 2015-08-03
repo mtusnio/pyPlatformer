@@ -19,14 +19,15 @@ scene.camera = cameraObj
 
 clock = pygame.time.Clock()
 while True:
-    lastClock = clock.tick()
+    lastClock = clock.tick(120)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
 
-    dt = lastClock / 1000.0
+    dt = 1/clock.get_fps() if clock.get_fps() != 0 else 0.16
 
-    gameScene.simulate_preframe(dt)
+    gameScene.setupframe(dt)
+    gameScene.simulate_preframe()
     gameRenderer.render(gameScene)
-    gameScene.simulate_postframe(dt)
+    gameScene.simulate_postframe()
     pygame.display.flip()

@@ -45,8 +45,8 @@ class Game(object):
 
             dt = 1/clock.get_fps() if clock.get_fps() != 0 else 0.16
 
-            self._handle_input([x for x in pygame.event.get()
-                                if x.type in [pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP, pygame.MOUSEMOTION]])
+            self._handle_input(pygame.event.get([pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN,
+                                                 pygame.MOUSEBUTTONUP, pygame.MOUSEMOTION]))
 
             self.scene.setup_frame(dt)
             self.scene.simulate_preframe()
@@ -57,7 +57,6 @@ class Game(object):
 
     def _handle_input(self, events):
         key_status = Input.key_status
-        binding = Input.bindings
 
         for key,val in key_status.iteritems():
             if val == KeyStatus.DEPRESSED_THIS_FRAME:
@@ -67,6 +66,6 @@ class Game(object):
 
         for event in events:
             if event.type == pygame.KEYDOWN:
-                key_status = KeyStatus.PRESSED_THIS_FRAME
+                key_status[event.key] = KeyStatus.PRESSED_THIS_FRAME
             elif event.type == pygame.KEYUP:
-                key_status = KeyStatus.DEPRESSED_THIS_FRAME
+                key_status[event.key] = KeyStatus.DEPRESSED_THIS_FRAME

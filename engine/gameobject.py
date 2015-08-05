@@ -53,7 +53,8 @@ class GameObject(object):
         """
         Runs object simulation before rendering
         """
-        pass
+        for component in self.components:
+            component.update()
 
     def update_postframe(self):
         """

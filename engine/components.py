@@ -7,6 +7,11 @@ class BaseComponent(object):
     def __init__(self, **kwargs):
         self.game_object = None
 
+    def update(self):
+        """
+        Runs once per frame before rendering
+        """
+        pass
 
 class Camera(BaseComponent):
     def __init__(self, **kwargs):

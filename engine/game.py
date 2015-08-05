@@ -15,7 +15,6 @@ class MissingSceneError(Exception):
 class Game(object):
     def __init__(self):
         self.bindings = None
-        self.input = None
         self.scene = None
         self.renderer = None
 

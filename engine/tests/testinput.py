@@ -12,11 +12,8 @@ class TestBindings(unittest.TestCase):
         Input.bindings["back"] = self._back_key
 
     def test_nobinding(self):
-        functions = [Input.get_binding_status, Input.is_binding_pressed, Input.is_binding_depressed]
-
-        for func in functions:
-            with self.assertRaises(BindingDoesNotExist):
-                func("deadbinding")
+        with self.assertRaises(BindingDoesNotExist):
+            Input.bindings["deadbinding"]
 
     def test_binding_status(self):
         Input.key_status.clear()

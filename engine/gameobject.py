@@ -9,16 +9,16 @@ class GameObject(object):
         :param component: Component list to add
         """
         self.components = self.components.union(set(components))
-        for cmp in components:
-            cmp.game_object = self
+        for component in components:
+            component.game_object = self
 
     def remove_components(self, *components):
         """
         :param components: List of components to remove
         """
         self.components = self.components.difference(set(components))
-        for cmp in components:
-            cmp.game_object = None
+        for component in components:
+            component.game_object = None
 
     def get_components(self, cls):
         """
@@ -27,9 +27,9 @@ class GameObject(object):
         :return : list
         """
         ret = []
-        for cmp in self.components:
-            if isinstance(cmp, cls):
-                ret.append(cmp)
+        for component in self.components:
+            if isinstance(component, cls):
+                ret.append(component)
         return ret
 
     def get_component(self, cls):

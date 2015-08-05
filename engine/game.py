@@ -39,9 +39,8 @@ class Game(object):
 
         while True:
             clock.tick()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
+            if len(pygame.event.get(pygame.QUIT)) > 0:
+                sys.exit()
 
             dt = 1/clock.get_fps() if clock.get_fps() != 0 else 0.16
 

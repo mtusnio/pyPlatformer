@@ -2,6 +2,7 @@ __author__ = 'Maverick'
 import pygame
 import renderer
 import sys
+from engine.input import Input, KeyStatus
 
 
 class MissingSceneError(Exception):
@@ -37,12 +38,15 @@ class Game(object):
             raise MissingSceneError()
 
         while True:
-            clock.tick(120)
+            clock.tick()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
 
             dt = 1/clock.get_fps() if clock.get_fps() != 0 else 0.16
+
+            self._handle_input([x for x in pygame.event.get()
+                                if x.type in [pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP, pygame.MOUSEMOTION]])
 
             self.scene.setup_frame(dt)
             self.scene.simulate_preframe()
@@ -51,3 +55,18 @@ class Game(object):
 
             pygame.display.flip()
 
+    def _handle_input(self, events):
+        key_status = Input.key_status
+        binding = Input.bindings
+
+        for key,val in key_status.iteritems():
+            if val == KeyStatus.DEPRESSED_THIS_FRAME:
+                key_status[key] = KeyStatus.DEPRESSED
+            elif val == KeyStatus.PRESSED_THIS_FRAME:
+                key_status[key] = KeyStatus.PRESSED
+
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                key_status = KeyStatus.PRESSED_THIS_FRAME
+            elif event.type == pygame.KEYUP:
+                key_status = KeyStatus.DEPRESSED_THIS_FRAME

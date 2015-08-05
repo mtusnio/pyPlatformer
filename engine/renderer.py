@@ -20,7 +20,7 @@ class Renderer(object):
             camera = scene.camera.get_component(components.Camera)
             transform = scene.camera.get_component(components.Transform)
             if transform is not None:
-                camera_position = (transform.position, transform.rotation)
+                camera_position = (math.Vector2(transform.position[0], -transform.position[1]), transform.rotation)
 
         for obj in scene.objects.values():
             sprites = obj.get_components(components.SpriteRenderer)

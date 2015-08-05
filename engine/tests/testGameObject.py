@@ -15,8 +15,8 @@ class TestGameObjectComponents(unittest.TestCase):
         obj = self._get_obj_with_components()
 
         self.assertEqual(len(obj.components), len(self.testComponents))
-        self.assertEqual(set(self.testComponents), obj.components)
-        self.assertEqual(len(obj.components), len(list(itertools.ifilter(lambda x: x.game_object == obj, obj.components))))
+        self.assertSetEqual(set(self.testComponents), obj.components)
+        self.assertSetEqual(set(obj.components), set([x for x in obj.components if x.game_object == obj]))
 
     def test_add_no_component(self):
         obj = GameObject()

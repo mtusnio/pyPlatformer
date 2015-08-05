@@ -3,6 +3,7 @@ import engine.components
 import unittest
 import engine.components
 
+
 class TestGameObjectComponents(unittest.TestCase):
     def setUp(self):
         import engine.components
@@ -15,7 +16,7 @@ class TestGameObjectComponents(unittest.TestCase):
 
         self.assertEqual(len(obj.components), len(self.testComponents))
         self.assertEqual(set(self.testComponents), obj.components)
-        self.assertEqual(len(obj.components), len(list(itertools.ifilter(lambda x: x.gameobject == obj, obj.components))))
+        self.assertEqual(len(obj.components), len(list(itertools.ifilter(lambda x: x.game_object == obj, obj.components))))
 
     def test_noadd(self):
         obj = GameObject()
@@ -66,7 +67,7 @@ class TestGameObjectComponents(unittest.TestCase):
 
         self.assertEqual(len(obj.components), length - count)
         self.assertSetEqual(obj.components & set(components), set())
-        self.assertEqual(len(components), len(list(itertools.ifilter(lambda x: x.gameobject is None, components))))
+        self.assertEqual(len(components), len(list(itertools.ifilter(lambda x: x.game_object is None, components))))
 
     def _get_obj_with_components(self):
         obj = GameObject()

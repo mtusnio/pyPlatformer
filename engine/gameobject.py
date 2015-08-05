@@ -10,7 +10,7 @@ class GameObject(object):
         """
         self.components = self.components.union(set(components))
         for cmp in components:
-            cmp.gameobject = self
+            cmp.game_object = self
 
     def remove_components(self, *components):
         """
@@ -18,7 +18,7 @@ class GameObject(object):
         """
         self.components = self.components.difference(set(components))
         for cmp in components:
-            cmp.gameobject = None
+            cmp.game_object = None
 
     def get_components(self, cls):
         """

@@ -1,5 +1,8 @@
 __author__ = 'Maverick'
-from engine import GameObject, components, Scene, Game
+from engine import GameObject, Scene, Game, Input
+import engine.components
+import components
+import pygame
 
 
 class Platformer(Game):
@@ -11,9 +14,16 @@ class Platformer(Game):
         self.scene = Scene(self)
 
         sprite_obj = GameObject()
-        sprite_obj.add_components(components.SpriteRenderer(path="assets\sprite.png"), components.Transform())
+        sprite_obj.add_components(engine.components.SpriteRenderer(path="assets\sprite.png"),
+                                  engine.components.Transform())
         self.scene.add_object(sprite_obj)
 
         self.scene.camera = GameObject()
-        self.scene.camera.add_components(components.Transform(), components.Camera())
+        self.scene.camera.add_components(engine.components.Transform(), engine.components.Camera(),
+                                         components.CameraControls())
         self.scene.add_object(self.scene.camera)
+
+        Input.bindings["forward"] = pygame.K_w
+        Input.bindings["left"] = pygame.K_a
+        Input.bindings["back"] = pygame.K_s
+        Input.bindings["right"] = pygame.K_d

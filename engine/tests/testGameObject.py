@@ -10,7 +10,7 @@ class TestGameObjectComponents(unittest.TestCase):
         self.testComponents = [ engine.components.BaseComponent(), engine.components.BaseComponent(),
                                 engine.components.BaseComponent(), engine.components.BaseComponent() ]
 
-    def test_newcomponents(self):
+    def test_add_components(self):
         import itertools
         obj = self._get_obj_with_components()
 
@@ -18,13 +18,13 @@ class TestGameObjectComponents(unittest.TestCase):
         self.assertEqual(set(self.testComponents), obj.components)
         self.assertEqual(len(obj.components), len(list(itertools.ifilter(lambda x: x.game_object == obj, obj.components))))
 
-    def test_noadd(self):
+    def test_add_no_component(self):
         obj = GameObject()
         obj.add_components()
 
         self.assertEqual(len(obj.components), 0)
 
-    def test_addexisting(self):
+    def test_add_existing_component(self):
         obj = GameObject()
         newList = self.testComponents + [engine.components.BaseComponent()]
         obj.add_components(*self.testComponents)
@@ -33,17 +33,13 @@ class TestGameObjectComponents(unittest.TestCase):
         self.assertEqual(len(obj.components), len(newList))
         self.assertEqual(set(newList), obj.components)
 
-    def test_removeone(self):
+    def test_remove_one_component(self):
         self._test_remove_components(self._get_obj_with_components(), 1)
 
-    def test_removemultiple(self):
+    def test_remove_many_components(self):
         self._test_remove_components(self._get_obj_with_components(), 3)
 
-    def test_removeall(self):
-        obj = self._get_obj_with_components()
-        self._test_remove_components(obj, len(obj.components))
-
-    def test_getcomponents(self):
+    def test_get_component(self):
         obj = GameObject()
         testcomponent = engine.components.SpriteRenderer()
         obj.add_components(testcomponent)
@@ -51,7 +47,7 @@ class TestGameObjectComponents(unittest.TestCase):
         self.assertEqual(len(obj.get_components(engine.components.BaseComponent)), len(obj.components))
         self.assertEqual(testcomponent, obj.get_components(engine.components.SpriteRenderer)[0])
 
-    def test_hascomponent(self):
+    def test_has_component(self):
         obj = GameObject()
         self.assertFalse(obj.has_component(engine.components.BaseComponent))
         obj.add_components(engine.components.Transform(), engine.components.SpriteRenderer())

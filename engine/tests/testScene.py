@@ -1,33 +1,47 @@
 import unittest
 from engine import Scene, GameObject
 
+
 class TestSceneObjects(unittest.TestCase):
-    def test_addobjects(self):
+    def test_scene_adds_objects(self):
         scene = Scene(None)
-        objects = [GameObject() for x in xrange(0, 10)]
+        objects = [GameObject() for x in xrange(0, 5000)]
         for obj in objects:
             scene.add_object(obj)
         self.assertEqual(len(scene.objects), len(objects))
+        self.assertEqual(set(scene.objects.values()), set(objects))
 
-        ids = set()
-        for key, obj in scene.objects.iteritems():
-            self.assertNotIn(obj.id, ids)
-            ids.add(obj.id)
-            self.assertEqual(scene, obj.scene)
-            self.assertIn(obj, objects)
+    def test_scene_assigns_unique_ids(self):
+        rng = range(0, 10000)
+        scene = Scene(None)
+        for obj in [GameObject() for x in rng]:
+            scene.add_object(obj)
 
+        self.assertEqual(set(scene.objects.keys()), set(rng))
+
+    def test_scene_sets_game_objects_scene_attribute(self):
+        scene = Scene(None)
+        obj = GameObject()
+        scene.add_object(obj)
+        self.assertTrue(obj.scene, scene)
+
+    def test_scene_does_not_allow_duplicated_additions(self):
+        scene = Scene(None)
+        obj = GameObject()
+        scene.add_object(obj)
         with self.assertRaises(ValueError):
-            scene.add_object(objects[0])
+            scene.add_object(obj)
+
+    def test_remove_on_empty_exception(self):
+        scene = Scene(None)
+        with self.assertRaises(ValueError):
+            scene.remove_object(GameObject())
 
     def test_removeobject(self):
         scene = Scene(None)
-
-        objects = [GameObject() for x in xrange(0, 10)]
+        objects = [GameObject() for x in xrange(0, 1000)]
         for obj in objects:
             scene.add_object(obj)
-
-        with self.assertRaises(ValueError):
-            scene.remove_object(GameObject())
 
         cut = len(objects)//2
         for obj in objects[:cut]:

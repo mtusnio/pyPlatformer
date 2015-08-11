@@ -12,7 +12,7 @@ class Scene(object):
     def add_object(self, obj):
         """
         Adds a new object to the scene and changes its scene & id variables
-        :param engine.gameobject.GameObject obj: Game object to add to the scene
+        :param engine.GameObject obj: Game object to add to the scene
         """
         if obj.id is not None or obj.scene:
             raise ValueError("Object has an id or is assigned to a scene")

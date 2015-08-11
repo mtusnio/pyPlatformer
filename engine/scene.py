@@ -2,6 +2,12 @@ import collections
 
 
 class Scene(object):
+    """
+    :type objects: dict[int, GameObject]
+    :type camera: GameObject
+    :type dt: float
+    :type game: Application
+    """
     def __init__(self, game):
         self.objects = collections.OrderedDict()
         self.camera = None

@@ -38,7 +38,7 @@ class Renderable(BaseComponent):
 class SpriteRenderer(Renderable):
     """
     :type image_path: basestring
-    :type image: pygame.image
+    :type image: pygame.Surface
     """
     def __init__(self, **kwargs):
         super(SpriteRenderer, self).__init__(**kwargs)

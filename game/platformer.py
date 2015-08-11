@@ -1,12 +1,12 @@
 __author__ = 'Maverick'
-from engine import GameObject, Scene, Game, Input
+from engine import GameObject, Scene, Application, Input
 import engine.components
 import components
 import pygame
 from engine import tiledmap
 
 
-class Platformer(Game):
+class Platformer(Application):
     def __init__(self):
         super(Platformer, self).__init__()
 

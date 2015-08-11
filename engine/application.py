@@ -12,7 +12,7 @@ class MissingSceneError(Exception):
     pass
 
 
-class Game(object):
+class Application(object):
     def __init__(self):
         self.bindings = None
         self.scene = None

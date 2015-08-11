@@ -42,11 +42,11 @@ class SpriteRenderer(Renderable):
     """
     def __init__(self, **kwargs):
         super(SpriteRenderer, self).__init__(**kwargs)
-        self.image_path = kwargs.get("path", None)
-        if self.image_path is not None:
-            self.image = pygame.image.load(self.image_path)
+        if "image" not in kwargs:
+            image_path = kwargs.get("path", None)
+            self.image = pygame.image.load(image_path) if image_path is not None else None
         else:
-            self.image = None
+            self.image = kwargs.get("image", None)
 
 
 class Transform(BaseComponent):

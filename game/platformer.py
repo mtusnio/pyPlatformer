@@ -18,11 +18,6 @@ class Platformer(Game):
                                engine.components.TiledMap(map_path="assets\levels\level01.tmx"))
         self.scene.add_object(map_obj)
 
-        sprite_obj = GameObject()
-        sprite_obj.add_components(engine.components.SpriteRenderer(path="assets\sprite.png"),
-                                  engine.components.Transform())
-        self.scene.add_object(sprite_obj)
-
         self.scene.camera = GameObject()
         self.scene.camera.add_components(engine.components.Transform(), engine.components.Camera(),
                                          components.CameraControls())

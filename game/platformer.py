@@ -13,6 +13,11 @@ class Platformer(Game):
         super(self.__class__, self).init(width, height)
         self.scene = Scene(self)
 
+        map_obj = GameObject()
+        map_obj.add_components(engine.components.Transform(),
+                               engine.components.TiledMap(map_path="assets\levels\level01.tmx"))
+        self.scene.add_object(map_obj)
+
         sprite_obj = GameObject()
         sprite_obj.add_components(engine.components.SpriteRenderer(path="assets\sprite.png"),
                                   engine.components.Transform())

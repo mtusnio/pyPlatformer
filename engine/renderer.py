@@ -29,14 +29,26 @@ class Renderer(object):
                     self._render(rend, camera_position)
 
     def _render(self, renderable, camera_position):
+        obj_transform = renderable.game_object.get_component(components.Transform)
+        if obj_transform is not None:
+            position = obj_transform.position - camera_position[0]
+            rotation = obj_transform.rotation - camera_position[1]
+            scale = obj_transform.scale
+        else:
+            position = math.Vector2(0, 0)
+            rotation = 0
+            scale = 1
+
         if isinstance(renderable, components.SpriteRenderer):
             if renderable.image is not None:
-                obj_transform = renderable.game_object.get_component(components.Transform)
-                if obj_transform is None:
-                    self.screen.blit(renderable.image, renderable.image.get_rect())
-                else:
-                    surface = pygame.transform.rotozoom(copy.copy(renderable.image), obj_transform.rotation - camera_position[1], obj_transform.scale)
-                    position = obj_transform.position - camera_position[0]
-                    self.screen.blit(surface, surface.get_rect(center=position))
+                self._render_image(renderable.image, position, rotation, scale)
         elif isinstance(renderable, components.TiledMap):
-            pass
+            tiled_map = renderable.map
+            if tiled_map is not None:
+                for layer in tiled_map.layers:
+                    for x, y, image in layer.tiles():
+                        self._render_image(image, math.Vector2(x * 70, y * 70) + position, rotation, scale)
+
+    def _render_image(self, image, position, rotation, scale):
+        surface = pygame.transform.rotozoom(copy.copy(image), rotation, scale)
+        self.screen.blit(surface, surface.get_rect(center=position))

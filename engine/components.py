@@ -67,7 +67,7 @@ class TiledMap(Renderable):
     :type map_path: basestring
     :type map: tiledmap.TiledMap
     """
-    def __init(self, **kwargs):
+    def __init__(self, **kwargs):
         super(TiledMap, self).__init__(**kwargs)
         self.map_path = kwargs.get("map_path", None)
         self.map = tiledmap.load(self.map_path) if self.map_path is not None else None

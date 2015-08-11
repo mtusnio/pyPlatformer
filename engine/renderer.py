@@ -47,7 +47,7 @@ class Renderer(object):
             if tiled_map is not None:
                 for layer in tiled_map.layers:
                     for x, y, image in layer.tiles():
-                        self._render_image(image, math.Vector2(x * 70, y * 70) + position, rotation, scale)
+                        self._render_image(image, math.Vector2(x * image.get_width(), y * image.get_height()) + position, rotation, scale)
 
     def _render_image(self, image, position, rotation, scale):
         surface = pygame.transform.rotozoom(image, rotation, scale)

@@ -7,7 +7,7 @@ import pygame
 
 class Platformer(Game):
     def __init__(self):
-        super(self.__class__, self).__init__()
+        super(Platformer, self).__init__()
 
     def init(self, width, height):
         super(self.__class__, self).init(width, height)

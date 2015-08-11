@@ -50,5 +50,5 @@ class Renderer(object):
                         self._render_image(image, math.Vector2(x * 70, y * 70) + position, rotation, scale)
 
     def _render_image(self, image, position, rotation, scale):
-        surface = pygame.transform.rotozoom(copy.copy(image), rotation, scale)
+        surface = pygame.transform.rotozoom(image, rotation, scale)
         self.screen.blit(surface, surface.get_rect(center=position))

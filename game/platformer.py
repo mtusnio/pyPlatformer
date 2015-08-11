@@ -3,6 +3,7 @@ from engine import GameObject, Scene, Game, Input
 import engine.components
 import components
 import pygame
+from engine import tiledmap
 
 
 class Platformer(Game):
@@ -15,7 +16,7 @@ class Platformer(Game):
 
         map_obj = GameObject()
         map_obj.add_components(engine.components.Transform(),
-                               engine.components.TiledMap(map_path="assets\levels\level01.tmx"))
+                               engine.components.TiledMap(path="assets\levels\level01.tmx"))
         self.scene.add_object(map_obj)
 
         self.scene.camera = GameObject()
@@ -27,3 +28,5 @@ class Platformer(Game):
         Input.bindings["left"] = pygame.K_a
         Input.bindings["back"] = pygame.K_s
         Input.bindings["right"] = pygame.K_d
+
+        tiledmap.fill_scene_with_objects(self.scene, map_obj.get_component(engine.components.TiledMap).map)

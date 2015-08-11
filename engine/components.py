@@ -69,5 +69,5 @@ class TiledMap(Renderable):
     """
     def __init__(self, **kwargs):
         super(TiledMap, self).__init__(**kwargs)
-        self.map_path = kwargs.get("map_path", None)
-        self.map = tiledmap.load(self.map_path) if self.map_path is not None else None
+        map_path = kwargs.get("path", None)
+        self.map = tiledmap.load(map_path) if map_path is not None else None

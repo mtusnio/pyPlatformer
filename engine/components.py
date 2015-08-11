@@ -20,7 +20,13 @@ class Camera(BaseComponent):
         self.fov = kwargs.get("fov", 80)
 
 
-class SpriteRenderer(BaseComponent):
+class Renderable(BaseComponent):
+    def __init__(self, **kwargs):
+        super(Renderable, self).__init__(**kwargs)
+        self.should_render = True
+
+
+class SpriteRenderer(Renderable):
     def __init__(self, **kwargs):
         super(SpriteRenderer, self).__init__(**kwargs)
         if kwargs.has_key("path"):
@@ -35,3 +41,10 @@ class Transform(BaseComponent):
         self.position = kwargs.get("position", math.Vector2(0, 0))
         self.rotation = kwargs.get("rotation", 0)
         self.scale = kwargs.get("scale", 1)
+
+
+class TiledMap(Renderable):
+    def __init(self, **kwargs):
+        super(TiledMap, self).__init__(**kwargs)
+        self.map_path = kwargs.get("map_path", None)
+        self.map = tiledmap.load(self.map_path) if self.map_path is not None else None

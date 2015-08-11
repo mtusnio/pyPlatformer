@@ -23,16 +23,20 @@ class Renderer(object):
                 camera_position = (math.Vector2(transform.position[0], -transform.position[1]), transform.rotation)
 
         for obj in scene.objects.values():
-            sprites = obj.get_components(components.SpriteRenderer)
-            for spr in sprites:
-                if spr.image is not None:
-                    self._render_sprite(spr, camera_position)
+            renderables = obj.get_components(components.Renderable)
+            for rend in renderables:
+                if rend.should_render is True:
+                    self._render(rend, camera_position)
 
-    def _render_sprite(self, sprite, camera_position):
-        obj_transform = sprite.game_object.get_component(components.Transform)
-        if obj_transform is None:
-            self.screen.blit(sprite.image, sprite.image.get_rect())
-        else:
-            surface = pygame.transform.rotozoom(copy.copy(sprite.image), obj_transform.rotation - camera_position[1], obj_transform.scale)
-            position = obj_transform.position - camera_position[0]
-            self.screen.blit(surface, surface.get_rect(center=position))
+    def _render(self, renderable, camera_position):
+        if isinstance(renderable, components.SpriteRenderer):
+            if renderable.image is not None:
+                obj_transform = renderable.game_object.get_component(components.Transform)
+                if obj_transform is None:
+                    self.screen.blit(renderable.image, renderable.image.get_rect())
+                else:
+                    surface = pygame.transform.rotozoom(copy.copy(renderable.image), obj_transform.rotation - camera_position[1], obj_transform.scale)
+                    position = obj_transform.position - camera_position[0]
+                    self.screen.blit(surface, surface.get_rect(center=position))
+        elif isinstance(renderable, components.TiledMap):
+            pass

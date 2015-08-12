@@ -22,6 +22,9 @@ class Renderer(object):
             if transform is not None:
                 camera_position = (math.Vector2(transform.position[0], transform.position[1]), transform.rotation)
 
+        camera_position[0][0] -= self.screen.get_width()/2
+        camera_position[0][1] += self.screen.get_height()/2
+
         for obj in scene.objects.values():
             renderables = obj.get_components(components.Renderable)
             for rend in renderables:

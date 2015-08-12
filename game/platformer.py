@@ -20,8 +20,7 @@ class Platformer(Application):
         self.scene.add_object(map_obj)
 
         self.scene.camera = GameObject()
-        self.scene.camera.add_components(engine.components.Transform(), engine.components.Camera(),
-                                         components.CameraControls())
+        self.scene.camera.add_components(engine.components.Transform(), engine.components.Camera())
         self.scene.add_object(self.scene.camera)
 
         Input.bindings["forward"] = pygame.K_w

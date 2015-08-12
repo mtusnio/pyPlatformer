@@ -4817,7 +4817,7 @@
  <objectgroup name="player_layer">
   <object id="12" name="player1" gid="157" x="2086.76" y="1075.06" width="72" height="97">
    <properties>
-    <property name="components" value=""/>
+    <property name="components" value="Player"/>
    </properties>
   </object>
  </objectgroup>

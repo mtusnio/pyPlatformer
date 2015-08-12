@@ -41,7 +41,7 @@ class Application(object):
             if len(pygame.event.get(pygame.QUIT)) > 0:
                 sys.exit()
 
-            dt = 1/clock.get_fps() if clock.get_fps() != 0 else 0.16
+            dt = 1/clock.get_fps() if clock.get_fps() != 0 else 0.04
 
             self._handle_input(pygame.event.get([pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN,
                                                  pygame.MOUSEBUTTONUP, pygame.MOUSEMOTION]))

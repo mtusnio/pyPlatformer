@@ -48,9 +48,11 @@ class Renderer(object):
         elif isinstance(renderable, components.TiledMap):
             tiled_map = renderable.map
             if tiled_map is not None:
+                tile_width = tiled_map.tilewidth
+                tile_height = tiled_map.tileheight
                 for layer in tiled_map.visible_tile_layers:
                     for x, y, image in tiled_map.layers[layer].tiles():
-                        tile_position = math.Vector2(x * image.get_width(), y * image.get_height())
+                        tile_position = math.Vector2(x * tile_width, y * tile_height)
                         self._render_image(image, tile_position + position, rotation, scale)
 
     def _render_image(self, image, position, rotation, scale):

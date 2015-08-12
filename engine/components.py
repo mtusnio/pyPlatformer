@@ -2,6 +2,8 @@ __author__ = 'Maverick'
 import pygame
 from engine import math
 import tiledmap
+import copy
+
 
 class BaseComponent(object):
     """
@@ -57,9 +59,19 @@ class Transform(BaseComponent):
     """
     def __init__(self, **kwargs):
         super(Transform, self).__init__(**kwargs)
-        self.position = kwargs.get("position", math.Vector2(0, 0))
+        self._position = kwargs.get("position", math.Vector2(0, 0))
         self.rotation = kwargs.get("rotation", 0)
         self.scale = kwargs.get("scale", 1)
+
+    @property
+    def position(self):
+        return self._position
+
+    @position.setter
+    def position(self, value):
+        self._position.x = value.x
+        self._position.y = value.y
+        self._position.epsilon = value.epsilon
 
 
 class TiledMap(Renderable):

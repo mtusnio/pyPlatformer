@@ -1,3 +1,6 @@
+from components import Transform
+
+
 class GameObject(object):
     def __init__(self):
         self.components = set()
@@ -61,3 +64,11 @@ class GameObject(object):
         Runs object simulation after rendering
         """
         pass
+
+    @property
+    def transform(self):
+        """
+        Shortcut function, behaves exactly like get_component for the transform component
+        :rtype Transform
+        """
+        return self.get_component(Transform)

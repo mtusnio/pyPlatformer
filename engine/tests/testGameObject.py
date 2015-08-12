@@ -10,6 +10,11 @@ class TestGameObjectComponents(unittest.TestCase):
         self.testComponents = [ engine.components.BaseComponent(), engine.components.BaseComponent(),
                                 engine.components.BaseComponent(), engine.components.BaseComponent() ]
 
+    def test_create_object_with_components(self):
+        obj = GameObject(*self.testComponents)
+
+        self.assertSetEqual(set(self.testComponents), obj.components)
+
     def test_add_components(self):
         import itertools
         obj = self._get_obj_with_components()

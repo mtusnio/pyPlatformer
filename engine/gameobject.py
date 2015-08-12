@@ -2,10 +2,12 @@ from components import Transform
 
 
 class GameObject(object):
-    def __init__(self):
+    def __init__(self, *components):
         self.components = set()
         self.scene = None
         self.id = None
+
+        self.add_components(*components)
 
     def add_components(self, *components):
         """

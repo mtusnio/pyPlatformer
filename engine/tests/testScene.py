@@ -1,5 +1,5 @@
 import unittest
-from engine import Scene, GameObject
+from engine import Scene, GameObject, components
 
 
 class TestSceneObjects(unittest.TestCase):
@@ -48,3 +48,33 @@ class TestSceneObjects(unittest.TestCase):
             scene.remove_object(obj)
         self.assertEqual(len(objects) - cut, len(scene.objects))
         self.assertSetEqual(set(objects[cut:]), set(scene.objects.values()))
+
+    def test_find_first_of_type(self):
+        scene = Scene(None)
+        first = GameObject(components.Camera())
+        second = GameObject(components.Camera())
+        scene.add_object(first)
+        scene.add_object(second)
+
+        tested_component = first.get_component(components.Camera)
+        self.assertIs(scene.get_object_of_type(components.Camera), tested_component)
+
+    def test_find_ordered_objects_of_type(self):
+        scene = Scene(None)
+        objects = [GameObject(components.Camera()) for x in range(0, 5)]
+        for obj in objects:
+            scene.add_object(obj)
+
+        component_list = [x.get_component(components.Camera) for x in objects]
+        self.assertEqual(component_list,
+                         scene.get_objects_of_type(components.Camera))
+        self.assertNotEqual(component_list[::-1],
+                            scene.get_objects_of_type(components.Camera))
+
+    def test_find_no_objects_of_type(self):
+        scene = Scene(None)
+        obj = GameObject(components.Camera())
+        scene.add_object(obj)
+
+        self.assertIsNone(scene.get_object_of_type(components.Renderable))
+        self.assertItemsEqual(scene.get_objects_of_type(components.Renderable), [])

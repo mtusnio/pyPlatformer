@@ -10,9 +10,9 @@ class CameraControls(components.BaseComponent):
             dt = self.game_object.scene.dt
             if transform is not None:
                 if Input.is_binding_pressed("forward"):
-                    transform.position[1] += 800 * dt
-                if Input.is_binding_pressed("back"):
                     transform.position[1] -= 800 * dt
+                if Input.is_binding_pressed("back"):
+                    transform.position[1] += 800 * dt
                 if Input.is_binding_pressed("left"):
                     transform.position[0] -= 800 * dt
                 if Input.is_binding_pressed("right"):

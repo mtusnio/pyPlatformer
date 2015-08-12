@@ -23,7 +23,7 @@ class Renderer(object):
                 camera_position = (math.Vector2(transform.position[0], transform.position[1]), transform.rotation)
 
         camera_position[0][0] -= self.screen.get_width()/2
-        camera_position[0][1] += self.screen.get_height()/2
+        camera_position[0][1] -= self.screen.get_height()/2
 
         for obj in scene.objects.values():
             renderables = obj.get_components(components.Renderable)
@@ -50,11 +50,9 @@ class Renderer(object):
             if tiled_map is not None:
                 for layer in tiled_map.visible_tile_layers:
                     for x, y, image in tiled_map.layers[layer].tiles():
-                        tile_position = math.Vector2(x * image.get_width(), math.fabs(y - tiled_map.height) *
-                                        image.get_height())
+                        tile_position = math.Vector2(x * image.get_width(), y * image.get_height())
                         self._render_image(image, tile_position + position, rotation, scale)
 
     def _render_image(self, image, position, rotation, scale):
-        position[1] = -position[1]
         surface = pygame.transform.rotozoom(image, rotation, scale)
         self.screen.blit(surface, surface.get_rect(center=position))

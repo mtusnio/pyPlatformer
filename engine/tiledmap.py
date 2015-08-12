@@ -16,7 +16,7 @@ def fill_scene_with_objects(scene, tiled_map):
     for group in tiled_map.visible_object_groups:
         for obj in tiled_map.layers[group]:
             game_object = engine.GameObject()
-            obj_position = math.Vector2(obj.x, -obj.y + tiled_map.height * tiled_map.tileheight)
+            obj_position = math.Vector2(obj.x, obj.y)
             game_object.add_components(components.Transform(position=obj_position),
                                        engine.components.SpriteRenderer(image=obj.image))
             obj_components = obj.properties.get("components", "")

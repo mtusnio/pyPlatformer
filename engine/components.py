@@ -1,6 +1,6 @@
 __author__ = 'Maverick'
 import pygame
-from engine import math
+from engine.math import Vector2
 import tiledmap
 
 
@@ -38,7 +38,7 @@ class Renderable(BaseComponent):
 
 class SpriteRenderer(Renderable):
     """
-    :type image_path: basestring
+    :type image_path: str
     :type image: pygame.Surface
     """
     def __init__(self, **kwargs):
@@ -52,13 +52,13 @@ class SpriteRenderer(Renderable):
 
 class Transform(BaseComponent):
     """
-    :type position: math.Vector2
+    :type position: Vector2
     :type rotation: float
     :type scale: float
     """
     def __init__(self, **kwargs):
         super(Transform, self).__init__(**kwargs)
-        self._position = kwargs.get("position", math.Vector2(0, 0))
+        self._position = kwargs.get("position", Vector2(0, 0))
         self.rotation = kwargs.get("rotation", 0)
         self.scale = kwargs.get("scale", 1)
 
@@ -73,9 +73,33 @@ class Transform(BaseComponent):
         self._position.epsilon = value.epsilon
 
 
+class BoundingRectangle(BaseComponent):
+    """
+    Base class for all bounding rectangles that we need to calculate
+    """
+    def __init__(self, **kwargs):
+        super(BoundingRectangle, self).__init__(**kwargs)
+
+    @property
+    def rectangle(self):
+        raise NotImplementedError()
+
+
+class SpriteBoundingRectangle(BoundingRectangle):
+    """
+    Bounding rectangle calculated using the sprite image
+    """
+    def __init__(self, **kwargs):
+        super(SpriteBoundingRectangle, self).__init__(**kwargs)
+
+    @property
+    def rectangle(self):
+        return self.game_object.get_component(SpriteRenderer).image.get_rect(center=self.game_object.transform.position)
+
+
 class TiledMap(Renderable):
     """
-    :type map_path: basestring
+    :type map_path: str
     :type map: tiledmap.TiledMap
     """
     def __init__(self, **kwargs):
@@ -86,7 +110,7 @@ class TiledMap(Renderable):
     def is_position_in_map(self, position):
         """
         Checks if the supplied world position is within map's bounds
-        :param math.Vector2 position: World position
+        :param Vector2 position: World position
         :return: True if position is within map's bounds, False otherwise
         """
         relative_pos = position - self.game_object.transform.position
@@ -104,7 +128,7 @@ class TiledMap(Renderable):
     def get_tile_for_position(self, position, extrapolate = False):
         """
         Returns x/y tile coordinates for specified world position
-        :param math.Vector2 position: World position
+        :param Vector2 position: World position
         :param bool extrapolate: If set to True it will return return potential out of bound tiles
         :return: Tuple containing x/y coordinates
         """
@@ -126,7 +150,7 @@ class TiledMap(Renderable):
         for group in tiled_map.visible_object_groups:
             for obj in tiled_map.layers[group]:
                 game_object = GameObject()
-                obj_position = math.Vector2(obj.x + obj.image.get_width()/2, obj.y + obj.image.get_height()/2)
+                obj_position = Vector2(obj.x + obj.image.get_width()/2, obj.y + obj.image.get_height()/2)
                 game_object.add_components(Transform(position=obj_position),
                                            SpriteRenderer(image=obj.image))
                 obj_components = obj.properties.get("components", "")

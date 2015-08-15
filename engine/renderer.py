@@ -52,7 +52,7 @@ class Renderer(object):
                 tile_height = tiled_map.tileheight
                 for layer in tiled_map.visible_tile_layers:
                     for x, y, image in tiled_map.layers[layer].tiles():
-                        tile_position = math.Vector2(x * tile_width, y * tile_height)
+                        tile_position = math.Vector2(x * tile_width + tile_width/2, y * tile_height + tile_height/2)
                         self._render_image(image, tile_position + position, rotation, scale)
 
     def _render_image(self, image, position, rotation, scale):

@@ -2,7 +2,6 @@ __author__ = 'Maverick'
 import pygame
 from engine import math
 import tiledmap
-import copy
 
 
 class BaseComponent(object):
@@ -83,3 +82,61 @@ class TiledMap(Renderable):
         super(TiledMap, self).__init__(**kwargs)
         map_path = kwargs.get("path", None)
         self.map = tiledmap.load(map_path) if map_path is not None else None
+
+    def is_position_in_map(self, position):
+        """
+        Checks if the supplied world position is within map's bounds
+        :param math.Vector2 position: World position
+        :return: True if position is within map's bounds, False otherwise
+        """
+        relative_pos = position - self.game_object.transform.position
+        if position[0] < 0 or position[1] < 0:
+            return False
+
+        if position[0] > self.map.tilewidth * self.map.width:
+            return False
+
+        if position[1] > self.map.tileheight * self.map.height:
+            return False
+
+        return True
+
+    def get_tile_for_position(self, position, extrapolate = False):
+        """
+        Returns x/y tile coordinates for specified world position
+        :param math.Vector2 position: World position
+        :param bool extrapolate: If set to True it will return return potential out of bound tiles
+        :return: Tuple containing x/y coordinates
+        """
+        if extrapolate is not True and not self.is_position_in_map(position):
+            raise ValueError("Position is out of map")
+
+        relative_position = position - self.game_object.transform.position
+        return relative_position[0] // self.map.tilewidth, relative_position[1] // self.map.tileheight
+
+    def fill_scene_with_objects(self):
+        """
+        Fills this object's scene with objects as described by tiled_map
+        """
+        import game.components as game_components
+        from engine import GameObject
+
+        tiled_map = self.map
+        scene = self.game_object.scene
+        for group in tiled_map.visible_object_groups:
+            for obj in tiled_map.layers[group]:
+                game_object = GameObject()
+                obj_position = math.Vector2(obj.x + obj.image.get_width()/2, obj.y + obj.image.get_height()/2)
+                game_object.add_components(Transform(position=obj_position),
+                                           SpriteRenderer(image=obj.image))
+                obj_components = obj.properties.get("components", "")
+                for component_name in obj_components.split(";"):
+                    component_class = None
+                    if hasattr(self.__module__, component_name):
+                        component_class = getattr(self.__module__, component_name, None)
+                    elif hasattr(game_components, component_name):
+                        component_class = getattr(game_components, component_name)
+
+                    if component_class is not None:
+                        game_object.add_components(component_class())
+                scene.add_object(game_object)

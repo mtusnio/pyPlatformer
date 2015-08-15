@@ -52,6 +52,13 @@ class TestGameObjectComponents(unittest.TestCase):
         self.assertEqual(len(obj.get_components(engine.components.BaseComponent)), len(obj.components))
         self.assertEqual(testcomponent, obj.get_components(engine.components.SpriteRenderer)[0])
 
+    def test_get_all_components(self):
+        obj = GameObject()
+        test_components = [engine.components.SpriteRenderer, engine.components.Transform, engine.components.SpriteBoundingRectangle]
+        obj.add_components(*test_components)
+
+        self.assertSetEqual(set(test_components), set(obj.get_components()))
+
     def test_has_component(self):
         obj = GameObject()
         self.assertFalse(obj.has_component(engine.components.BaseComponent))

@@ -25,12 +25,15 @@ class GameObject(object):
         for component in components:
             component.game_object = None
 
-    def get_components(self, cls):
+    def get_components(self, cls=None):
         """
         Returns all components which inherit from supplied class
-        :param cls: Class of component to return
+        :param cls: Class of component to return, all will be returned if None
         :return : list
         """
+        if cls is None:
+            return list(self.components)
+
         ret = []
         for component in self.components:
             if isinstance(component, cls):

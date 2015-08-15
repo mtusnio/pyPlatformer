@@ -2,6 +2,8 @@ __author__ = 'Maverick'
 import pygame
 from engine.math import Vector2
 import tiledmap
+import logging
+import sys
 
 
 class BaseComponent(object):
@@ -146,6 +148,21 @@ class TiledMap(Renderable):
 
         return True
 
+    def is_tile_in_map(self, x, y):
+        """
+        Checks if the x/y tile coordinates are within bounds of the map
+        :param int x:
+        :param int y:
+        :return: True if the tile is within map bounds
+        """
+        if x < 0 or y < 0:
+            return False
+
+        if x >= self.map.tilewidth or y >= self.map.tileheight:
+            return False
+
+        return True
+
     def get_tile_for_position(self, position, extrapolate = False):
         """
         Returns x/y tile coordinates for specified world position
@@ -157,7 +174,19 @@ class TiledMap(Renderable):
             raise ValueError("Position is out of map")
 
         relative_position = position - self.game_object.transform.position
-        return relative_position[0] // self.map.tilewidth, relative_position[1] // self.map.tileheight
+        return int(relative_position[0] // self.map.tilewidth), int(relative_position[1] // self.map.tileheight)
+
+    def get_rectangle_for_tile(self, x, y):
+        """
+        Returns a rectangle which covers the tile at provided coordinates
+        :type x int
+        :type y int
+        :rtype pygame.Rect
+        """
+        if not self.is_tile_in_map(x, y):
+            raise ValueError("Position is out of map")
+
+        return pygame.Rect((x * self.map.tilewidth, y * self.map.tileheight), (self.map.tilewidth, self.map.tileheight))
 
     def fill_scene_with_objects(self):
         """
@@ -179,11 +208,40 @@ class TiledMap(Renderable):
                 obj_components = obj.properties.get("components", "")
                 for component_name in obj_components.split(";"):
                     component_class = None
-                    if hasattr(self.__module__, component_name):
-                        component_class = getattr(self.__module__, component_name, None)
+                    module = sys.modules[__name__]
+                    if hasattr(module, component_name):
+                        component_class = getattr(module, component_name)
                     elif hasattr(game_components, component_name):
                         component_class = getattr(game_components, component_name)
 
                     if component_class is not None:
                         game_object.add_components(component_class())
+                    else:
+                        logging.warning("Could not find class: '{0}'".format(component_name))
+
                 scene.add_object(game_object)
+
+
+class TiledMapCollider(Collider):
+    def __init__(self, **kwargs):
+        super(TiledMapCollider, self).__init__(**kwargs)
+
+    def check_collision(self, game_object):
+        tiled_map = self.game_object.get_component(TiledMap)
+        bounding_rect = game_object.get_component(BoundingRectangle)
+
+        if tiled_map is None or bounding_rect is None:
+            return False
+
+        rect = bounding_rect.rectangle
+        top_left = tiled_map.get_tile_for_position(Vector2(rect.topleft), True)
+        bottom_right = tiled_map.get_tile_for_position(Vector2(rect.bottomright), True)
+
+        for x in xrange(top_left[0], bottom_right[0] + 1):
+            for y in xrange(top_left[1], bottom_right[1] + 1):
+                tile_rect = tiled_map.get_rectangle_for_tile(x, y)
+                return tile_rect.colliderect(rect)
+
+        return False
+
+

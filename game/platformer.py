@@ -17,7 +17,8 @@ class Platformer(Application):
         map_obj = GameObject()
         self.scene.add_object(map_obj)
         map_obj.add_components(engine.components.Transform(),
-                               engine.components.TiledMap(path="assets\levels\level01.tmx"))
+                               engine.components.TiledMap(path="assets\levels\level01.tmx"),
+                               engine.components.TiledMapCollider())
 
         self.scene.camera = GameObject()
         self.scene.add_object(self.scene.camera)

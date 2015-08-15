@@ -97,6 +97,27 @@ class SpriteBoundingRectangle(BoundingRectangle):
         return self.game_object.get_component(SpriteRenderer).image.get_rect(center=self.game_object.transform.position)
 
 
+class Collider(BaseComponent):
+    """
+    Collider class which can expanded for custom collisions, by default uses BoundingRectangle
+    on both objects to check for collisions.
+    """
+    def __init__(self, **kwargs):
+        super(Collider, self).__init__(**kwargs)
+
+    def check_collision(self, game_object):
+        """
+        Checks collision between object holding this component and supplied game object
+        :param engine.GameObject game_object: Game object which we might be colliding with
+        :return bool: True if this object collides with game_object
+        """
+        my_rectangle = self.game_object.get_component(BoundingRectangle)
+        other_rectangle = game_object.get_component(BoundingRectangle)
+        if my_rectangle is None or other_rectangle is None:
+            return False
+        return my_rectangle.rectangle.colliderect(other_rectangle.rectangle)
+
+
 class TiledMap(Renderable):
     """
     :type map_path: str

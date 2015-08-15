@@ -1,4 +1,5 @@
 import collections
+from components import *
 
 
 class Scene(object):
@@ -52,6 +53,8 @@ class Scene(object):
         Renders a frame before rendering is done
         :param float dt: Frametime
         """
+        self._check_collisions()
+
         for obj in self.objects.values():
             obj.update()
 
@@ -85,3 +88,22 @@ class Scene(object):
                 ret.append(component)
         return ret
 
+    def _check_collisions(self):
+        checked = set()
+        for obj1 in self.objects.values():
+            collider1 = obj1.get_component(Collider)
+            if collider1 is not None:
+                for obj2 in self.objects.values():
+                    if obj1 is not obj2 and (obj1, obj2) not in checked:
+                        collider2 = obj2.get_component(Collider)
+                        if collider2 is not None:
+                            if collider1.check_collision(obj2) or collider2.check_collision(obj1):
+                                checked.add((obj1, obj2))
+                                checked.add((obj2, obj1))
+                                self._notify_of_collisions(obj1, obj2)
+                                self._notify_of_collisions(obj2, obj1)
+
+    def _notify_of_collisions(self, obj, collided_with):
+        for component in obj.get_components():
+            if hasattr(component, "collide"):
+                component.collide(collided_with)

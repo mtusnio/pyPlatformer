@@ -151,8 +151,10 @@ class TiledMap(Renderable):
             for obj in tiled_map.layers[group]:
                 game_object = GameObject()
                 obj_position = Vector2(obj.x + obj.image.get_width()/2, obj.y + obj.image.get_height()/2)
-                game_object.add_components(Transform(position=obj_position),
-                                           SpriteRenderer(image=obj.image))
+                game_object.add_components(Transform(position=obj_position))
+                if obj.image is not None:
+                    game_object.add_components(SpriteRenderer(image=obj.image), SpriteBoundingRectangle())
+
                 obj_components = obj.properties.get("components", "")
                 for component_name in obj_components.split(";"):
                     component_class = None

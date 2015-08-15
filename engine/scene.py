@@ -97,9 +97,9 @@ class Scene(object):
                     if obj1 is not obj2 and (obj1, obj2) not in checked:
                         collider2 = obj2.get_component(Collider)
                         if collider2 is not None:
+                            checked.add((obj1, obj2))
+                            checked.add((obj2, obj1))
                             if collider1.check_collision(obj2) or collider2.check_collision(obj1):
-                                checked.add((obj1, obj2))
-                                checked.add((obj2, obj1))
                                 self._notify_of_collisions(obj1, obj2)
                                 self._notify_of_collisions(obj2, obj1)
 

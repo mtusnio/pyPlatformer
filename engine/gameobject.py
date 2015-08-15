@@ -29,7 +29,7 @@ class GameObject(object):
         """
         Returns all components which inherit from supplied class
         :param cls: Class of component to return, all will be returned if None
-        :return : list
+        :return list: List of all components fitting the parameters
         """
         if cls is None:
             return list(self.components)
@@ -44,7 +44,7 @@ class GameObject(object):
         """
         Returns first found component of specified class
         :param cls: Class of component to return
-        :return: First component that matches the class, None if none found
+        :return engine.components.BaseComponent: First component that matches the class, None if none found
         """
         components = self.get_components(cls)
         return components[0] if len(components) > 0 else None

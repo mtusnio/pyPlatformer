@@ -24,9 +24,8 @@ class Platformer(Application):
         self.scene.add_object(self.scene.camera)
         self.scene.camera.add_components(engine.components.Transform(), engine.components.Camera())
 
-        Input.bindings["forward"] = pygame.K_w
         Input.bindings["left"] = pygame.K_a
-        Input.bindings["back"] = pygame.K_s
         Input.bindings["right"] = pygame.K_d
+        Input.bindings["jump"] = pygame.K_SPACE
 
         map_obj.get_component(engine.components.TiledMap).fill_scene_with_objects()

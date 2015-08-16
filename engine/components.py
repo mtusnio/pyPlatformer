@@ -107,17 +107,13 @@ class Collider(BaseComponent):
     def __init__(self, **kwargs):
         super(Collider, self).__init__(**kwargs)
 
-    def check_collision(self, game_object):
+    def get_collision_rectangles(self, game_object):
         """
-        Checks collision between object holding this component and supplied game object
-        :param engine.GameObject game_object: Game object which we might be colliding with
-        :return bool: True if this object collides with game_object
+        Returns a list of rectangles to use for collision detection.
+        :param engine.GameObject game_object: Object we are testing collisions against
+        :return pygame.Rect:
         """
-        my_rectangle = self.game_object.get_component(BoundingRectangle)
-        other_rectangle = game_object.get_component(BoundingRectangle)
-        if my_rectangle is None or other_rectangle is None:
-            return False
-        return my_rectangle.rectangle.colliderect(other_rectangle.rectangle)
+        return [self.game_object.get_component(BoundingRectangle).rectangle]
 
 
 class TiledMap(Renderable):
@@ -225,23 +221,38 @@ class TiledMap(Renderable):
 class TiledMapCollider(Collider):
     def __init__(self, **kwargs):
         super(TiledMapCollider, self).__init__(**kwargs)
+        self.collidable_tiles = None
 
-    def check_collision(self, game_object):
+    def get_collision_rectangles(self, game_object):
         tiled_map = self.game_object.get_component(TiledMap)
         bounding_rect = game_object.get_component(BoundingRectangle)
 
         if tiled_map is None or bounding_rect is None:
-            return False
+            return []
+
+        if self.collidable_tiles is None:
+            self._create_collidable_list()
 
         rect = bounding_rect.rectangle
         top_left = tiled_map.get_tile_for_position(Vector2(rect.topleft), True)
         bottom_right = tiled_map.get_tile_for_position(Vector2(rect.bottomright), True)
 
+        collidable_rectangles = []
         for x in xrange(top_left[0], bottom_right[0] + 1):
             for y in xrange(top_left[1], bottom_right[1] + 1):
-                tile_rect = tiled_map.get_rectangle_for_tile(x, y)
-                return tile_rect.colliderect(rect)
+                if (x, y) in self.collidable_tiles:
+                    rectangle = tiled_map.get_rectangle_for_tile(x, y)
+                    collidable_rectangles.append(rectangle)
 
-        return False
+        return collidable_rectangles
 
+    def _create_collidable_list(self):
+        tiled_map = self.game_object.get_component(TiledMap).map
+        assert isinstance(tiled_map, tiledmap.TiledMap)
 
+        self.collidable_tiles = set()
+        for layer_num in tiled_map.visible_tile_layers:
+            layer = tiled_map.layers[layer_num]
+            if "collidable" in layer.properties and layer.properties["collidable"].lower() == "true":
+                for x, y, image in layer.tiles():
+                    self.collidable_tiles.add((x,y))

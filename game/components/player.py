@@ -29,3 +29,6 @@ class Player(components.BaseComponent):
         #if self.flying:
         #    transform.position[1] += self.GRAVITY * dt
 
+    def collide(self, game_object, *rectangles):
+        pass
+

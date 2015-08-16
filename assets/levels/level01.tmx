@@ -2411,6 +2411,9 @@
   </data>
  </layer>
  <layer name="Ground" width="120" height="20">
+  <properties>
+   <property name="collidable" value="True"/>
+  </properties>
   <data>
    <tile gid="0"/>
    <tile gid="0"/>

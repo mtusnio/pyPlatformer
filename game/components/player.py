@@ -1,5 +1,7 @@
 __author__ = 'Maverick'
-from engine import components
+from engine import components, Input
+from engine.input import BindingDoesNotExist
+import logging
 
 
 class Player(components.BaseComponent):
@@ -20,15 +22,34 @@ class Player(components.BaseComponent):
             return
 
         transform = player.transform
-        pos = transform.position
-        if not tiled_map.is_position_in_map(pos):
+        position = transform.position
+        if not tiled_map.is_position_in_map(position):
             return
-        x, y = tiled_map.get_tile_for_position(pos)
 
         dt = self.game_object.scene.dt
-        #if self.flying:
-        #    transform.position[1] += self.GRAVITY * dt
+        try:
+            if Input.is_binding_pressed("left"):
+                transform.position[0] -= 400 * dt
+            if Input.is_binding_pressed("right"):
+                transform.position[0] += 400 * dt
+        except BindingDoesNotExist as e:
+            logging.warning("Binding not found: " + str(e))
+
+        x, y = tiled_map.get_tile_for_position(position)
+
+        if self.flying:
+            transform.position[1] += self.GRAVITY * dt
 
     def collide(self, game_object, *rectangles):
-        pass
+        bounding_rectangle = self.game_object.get_component(components.BoundingRectangle).rectangle
+        transform = self.game_object.transform
+        position = transform.position
 
+        if game_object.has_component(components.TiledMapCollider):
+            #upper_rectangles = [rect for rect in rectangles if position - rect.center < 0]
+            lower_rectangles = [rect for rect in rectangles if position - rect.center > 0]
+
+            if self.flying:
+                closest_lower = min(lower_rectangles, key=lambda rect: (position - rect.center).length())
+                transform.position.y = closest_lower.top - bounding_rectangle.height/2
+                self.flying = False

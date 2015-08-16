@@ -169,7 +169,7 @@ class TiledMap(Renderable):
         :return: object containing all above properties
         """
         if not self.is_tile_in_map(x, y):
-            raise ValueError("Position out of map")
+            raise ValueError(self.__format_out_of_position(x, y))
 
         properties = {}
         if self._collidable_tiles is None:
@@ -187,7 +187,7 @@ class TiledMap(Renderable):
         :return: Tuple containing x/y coordinates
         """
         if extrapolate is not True and not self.is_position_in_map(position):
-            raise ValueError("Position is out of map")
+            raise ValueError(self.__format_out_of_position(position.x, position.y))
 
         relative_position = position - self.game_object.transform.position
         return int(relative_position[0] // self.map.tilewidth), int(relative_position[1] // self.map.tileheight)
@@ -200,7 +200,7 @@ class TiledMap(Renderable):
         :rtype pygame.Rect
         """
         if not self.is_tile_in_map(x, y):
-            raise ValueError("Position is out of map")
+            raise ValueError(self.__format_out_of_position(x, y))
 
         return pygame.Rect((x * self.map.tilewidth, y * self.map.tileheight), (self.map.tilewidth, self.map.tileheight))
 
@@ -248,6 +248,8 @@ class TiledMap(Renderable):
                 for x, y, image in layer.tiles():
                     self._collidable_tiles.add((x,y))
 
+    def __format_out_of_position(self, x, y):
+        return "Position({0}, {1}) out of map".format(x, y)
 
 class TiledMapCollider(Collider):
     def __init__(self, **kwargs):

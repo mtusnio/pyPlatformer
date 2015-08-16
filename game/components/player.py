@@ -50,7 +50,7 @@ class Player(components.BaseComponent):
 
         if game_object.has_component(components.TiledMapCollider):
             #upper_rectangles = [rect for rect in rectangles if position - rect.center < 0]
-            lower_rectangles = [rect for rect in rectangles if position - rect.center > 0]
+            lower_rectangles = [rect for rect in rectangles if bounding_rectangle.bottom > rect.top]
 
             if self.flying and len(lower_rectangles) > 0:
                 closest_lower = min(lower_rectangles, key=lambda rect: (position - rect.center).length())

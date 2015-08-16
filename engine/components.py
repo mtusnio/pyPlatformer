@@ -155,7 +155,7 @@ class TiledMap(Renderable):
         if x < 0 or y < 0:
             return False
 
-        if x >= self.map.tilewidth or y >= self.map.tileheight:
+        if x >= self.map.width or y >= self.map.height:
             return False
 
         return True

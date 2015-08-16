@@ -35,7 +35,10 @@ class Player(components.BaseComponent):
         except BindingDoesNotExist as e:
             logging.warning("Binding not found: " + str(e))
 
-        x, y = tiled_map.get_tile_for_position(position)
+        if not self.flying:
+            x, y = tiled_map.get_tile_for_position(position)
+            if not tiled_map.get_tile_properties(x, y + 1)["collidable"]:
+                self.flying = True
 
         if self.flying:
             transform.position[1] += self.GRAVITY * dt
@@ -49,7 +52,7 @@ class Player(components.BaseComponent):
             #upper_rectangles = [rect for rect in rectangles if position - rect.center < 0]
             lower_rectangles = [rect for rect in rectangles if position - rect.center > 0]
 
-            if self.flying:
+            if self.flying and len(lower_rectangles) > 0:
                 closest_lower = min(lower_rectangles, key=lambda rect: (position - rect.center).length())
                 transform.position.y = closest_lower.top - bounding_rectangle.height/2
                 self.flying = False

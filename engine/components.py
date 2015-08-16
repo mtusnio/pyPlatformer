@@ -125,6 +125,7 @@ class TiledMap(Renderable):
         super(TiledMap, self).__init__(**kwargs)
         map_path = kwargs.get("path", None)
         self.map = tiledmap.load(map_path) if map_path is not None else None
+        self._collidable_tiles = None
 
     def is_position_in_map(self, position):
         """
@@ -158,6 +159,25 @@ class TiledMap(Renderable):
             return False
 
         return True
+
+    def get_tile_properties(self, x, y):
+        """
+        Returns a dictionary containing all tile properties:
+            collidable - true if we can collide with this tile
+        :param int x:
+        :param int y:
+        :return: object containing all above properties
+        """
+        if not self.is_tile_in_map(x, y):
+            raise ValueError("Position out of map")
+
+        properties = {}
+        if self._collidable_tiles is None:
+            self._create_collidable_set()
+
+        properties["collidable"] = (x,y) in self._collidable_tiles
+
+        return properties
 
     def get_tile_for_position(self, position, extrapolate = False):
         """
@@ -217,6 +237,17 @@ class TiledMap(Renderable):
 
                 scene.add_object(game_object)
 
+    def _create_collidable_set(self):
+        tiled_map = self.game_object.get_component(TiledMap).map
+        assert isinstance(tiled_map, tiledmap.TiledMap)
+
+        self._collidable_tiles = set()
+        for layer_num in tiled_map.visible_tile_layers:
+            layer = tiled_map.layers[layer_num]
+            if "collidable" in layer.properties and layer.properties["collidable"].lower() == "true":
+                for x, y, image in layer.tiles():
+                    self._collidable_tiles.add((x,y))
+
 
 class TiledMapCollider(Collider):
     def __init__(self, **kwargs):
@@ -230,9 +261,6 @@ class TiledMapCollider(Collider):
         if tiled_map is None or bounding_rect is None:
             return []
 
-        if self.collidable_tiles is None:
-            self._create_collidable_list()
-
         rect = bounding_rect.rectangle
         top_left = tiled_map.get_tile_for_position(Vector2(rect.topleft), True)
         bottom_right = tiled_map.get_tile_for_position(Vector2(rect.bottomright), True)
@@ -240,19 +268,9 @@ class TiledMapCollider(Collider):
         collidable_rectangles = []
         for x in xrange(top_left[0], bottom_right[0] + 1):
             for y in xrange(top_left[1], bottom_right[1] + 1):
-                if (x, y) in self.collidable_tiles:
+                if tiled_map.get_tile_properties(x, y)["collidable"]:
                     rectangle = tiled_map.get_rectangle_for_tile(x, y)
                     collidable_rectangles.append(rectangle)
 
         return collidable_rectangles
 
-    def _create_collidable_list(self):
-        tiled_map = self.game_object.get_component(TiledMap).map
-        assert isinstance(tiled_map, tiledmap.TiledMap)
-
-        self.collidable_tiles = set()
-        for layer_num in tiled_map.visible_tile_layers:
-            layer = tiled_map.layers[layer_num]
-            if "collidable" in layer.properties and layer.properties["collidable"].lower() == "true":
-                for x, y, image in layer.tiles():
-                    self.collidable_tiles.add((x,y))

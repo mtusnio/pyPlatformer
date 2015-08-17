@@ -78,6 +78,8 @@ class Player(components.BaseComponent):
         self.velocity.y = sorted((-self.MAX_VERTICAL_SPEED, self.velocity.y, self.MAX_VERTICAL_SPEED))[1]
 
         self.applied_velocity = self.velocity * dt
+        self.applied_velocity.x = 0 if abs(self.applied_velocity.x) < 2 else self.applied_velocity.x
+
         transform.position = position + self.applied_velocity
 
     def collide(self, game_object, *rectangles):
@@ -87,8 +89,7 @@ class Player(components.BaseComponent):
 
         if game_object.has_component(components.TiledMapCollider):
             prev_rectangle = bounding_rectangle.move(-self.applied_velocity)
-            #horizontal_rectangle = bounding_rectangle.move(Vector2(self._applied_velocity.x, 0))
-            #vertical_rectangle = bounding_rectangle.move(Vector2(0, self._applied_velocity.y))
+
             epsilon = 0.5
             for collided in rectangles:
                 if prev_rectangle.bottom - collided.top <= epsilon:

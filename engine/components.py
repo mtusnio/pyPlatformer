@@ -1,6 +1,6 @@
 __author__ = 'Maverick'
 import pygame
-from engine.math import Vector2
+from engine.math import Vector2, Rect
 import tiledmap
 import logging
 import sys
@@ -198,17 +198,33 @@ class TiledMap(Renderable):
         relative_position = position - self.game_object.transform.position
         return int(relative_position[0] // self.map.tilewidth), int(relative_position[1] // self.map.tileheight)
 
+    def get_tiles_for_area(self, area, extrapolate = False):
+        """
+        Finds all tiles that fit within the given area
+        :param Rect area: Rectangle within which we want to grab all tiles
+        :param bool extrapolate: If true it will also return tiles out of map bounds instead of raising an exception
+        :return list: List of all found tiles in right-down format
+        """
+        top_left = self.get_tile_for_position(area.topleft, extrapolate)
+        bottom_right = self.get_tile_for_position(area.bottomright, extrapolate)
+
+        ret = []
+        for x in xrange(top_left[0], bottom_right[0] + 1):
+            for y in xrange(top_left[1], bottom_right[1] + 1):
+                ret.append((x, y))
+
+        return ret
+
     def get_rectangle_for_tile(self, x, y):
         """
         Returns a rectangle which covers the tile at provided coordinates
         :type x int
         :type y int
-        :rtype pygame.Rect
         """
         if not self.is_tile_in_map(x, y):
             raise ValueError(self.__format_out_of_position(x, y))
 
-        return pygame.Rect((x * self.map.tilewidth, y * self.map.tileheight), (self.map.tilewidth, self.map.tileheight))
+        return Rect((x * self.map.tilewidth, y * self.map.tileheight), (self.map.tilewidth, self.map.tileheight))
 
     def fill_scene_with_objects(self):
         """

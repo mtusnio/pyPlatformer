@@ -19,6 +19,12 @@ class BaseComponent(object):
         """
         pass
 
+    def update_postframe(self):
+        """
+        Runs once per frame after rendering
+        """
+        pass
+
 
 class Camera(BaseComponent):
     """

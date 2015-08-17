@@ -73,12 +73,21 @@ class Player(components.BaseComponent):
         transform = self.game_object.transform
         position = transform.position
 
+        find_closeset_tile = lambda rects: min(rects, key=lambda rect: (position - rect.center).length())
         if game_object.has_component(components.TiledMapCollider):
-            #upper_rectangles = [rect for rect in rectangles if position - rect.center < 0]
-            lower_rectangles = [rect for rect in rectangles if bounding_rectangle.bottom > rect.top]
+            if self.flying:
+                upper_rectangles = [rect for rect in rectangles if bounding_rectangle.top < rect.bottom
+                                    and bounding_rectangle.bottom > rect.bottom]
+                lower_rectangles = [rect for rect in rectangles if bounding_rectangle.bottom > rect.top
+                                    and bounding_rectangle.top < rect.top]
 
-            if self.flying and len(lower_rectangles) > 0:
-                closest_lower = min(lower_rectangles, key=lambda rect: (position - rect.center).length())
-                transform.position.y = closest_lower.top - bounding_rectangle.height/2
-                self.flying = False
-                self.velocity[1] = 0
+                if len(lower_rectangles) > 0:
+                    closest_lower = find_closeset_tile(lower_rectangles)
+                    transform.position.y = closest_lower.top - bounding_rectangle.height/2
+                    self.flying = False
+                    self.velocity[1] = 0
+                elif len(upper_rectangles) > 0:
+                    closest_upper = find_closeset_tile(upper_rectangles)
+                    transform.position.y = closest_upper.bottom + bounding_rectangle.height/2
+                    self.velocity[1] = abs(self.velocity[1]/2)
+

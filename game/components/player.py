@@ -18,6 +18,7 @@ class Player(components.BaseComponent):
         self.flying = True
         self.velocity = Vector2(0, 0)
         self.applied_velocity = Vector2(0, 0)
+        self.last_frame_rectangle = None
 
     def update_postframe(self):
         player = self.game_object
@@ -78,8 +79,8 @@ class Player(components.BaseComponent):
         self.velocity.y = sorted((-self.MAX_VERTICAL_SPEED, self.velocity.y, self.MAX_VERTICAL_SPEED))[1]
 
         self.applied_velocity = self.velocity * dt
-        self.applied_velocity.x = 0 if abs(self.applied_velocity.x) < 2 else self.applied_velocity.x
 
+        self.last_frame_rectangle = bounding_rectangle
         transform.position = position + self.applied_velocity
 
     def collide(self, game_object, *rectangles):
@@ -88,22 +89,29 @@ class Player(components.BaseComponent):
         position = transform.position
 
         if game_object.has_component(components.TiledMapCollider):
-            prev_rectangle = bounding_rectangle.move(-self.applied_velocity)
-
-            epsilon = 0.5
+            epsilon = 0
+            prev_rectangle = self.last_frame_rectangle
+            horizontal_rectangle = prev_rectangle.move(Vector2(self.applied_velocity.x, 0))
+            logging.warning("=====")
             for collided in rectangles:
-                if prev_rectangle.bottom - collided.top <= epsilon:
-                    self.velocity.y = 0
-                    self.flying = False
-                    position.y = collided.top - bounding_rectangle.height/2 - 1
-                    continue
-                elif prev_rectangle.top - collided.bottom >= epsilon:
-                    self.velocity.y = abs(self.velocity.y)
-                    position.y = collided.bottom + bounding_rectangle.height/2 + 1
+                logging.warning("Collision %i %i", collided.x, collided.y)
+
+                if not horizontal_rectangle.colliderect(collided):
+                    if collided.top - prev_rectangle.bottom >= -epsilon:
+                        logging.warning("Bottom")
+                        self.velocity.y = 0
+                        self.flying = False
+                        position.y = collided.top - bounding_rectangle.height/2 - 1
+                    elif prev_rectangle.top - collided.bottom >= -epsilon:
+                        logging.warning("Top")
+                        self.velocity.y = abs(self.velocity.y)/2
+                        position.y = collided.bottom + bounding_rectangle.height/2 + 1
                     continue
 
                 self.velocity.x = 0
                 if position.x < collided.centerx:
+                    logging.warning("Left")
                     position.x = collided.left - bounding_rectangle.width/2 - 1
                 else:
+                    logging.warning("Right")
                     position.x = collided.right + bounding_rectangle.width/2 + 1

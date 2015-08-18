@@ -102,8 +102,8 @@ class Scene(object):
                             self._run_collision_check(collider1, collider2)
 
     def _run_collision_check(self, collider1, collider2):
-        first_rects = collider1.get_collision_rectangles(collider2.game_object)
-        second_rects = collider2.get_collision_rectangles(collider1.game_object)
+        first_rects = collider1.get_collision_shapes(collider2.game_object)
+        second_rects = collider2.get_collision_shapes(collider1.game_object)
 
         first_collision_data = []
         second_collision_data = []

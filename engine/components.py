@@ -113,7 +113,7 @@ class Collider(BaseComponent):
     def __init__(self, **kwargs):
         super(Collider, self).__init__(**kwargs)
 
-    def get_collision_rectangles(self, game_object):
+    def get_collision_shapes(self, game_object):
         """
         Returns a list of rectangles to use for collision detection.
         :param engine.GameObject game_object: Object we are testing collisions against
@@ -278,7 +278,7 @@ class TiledMapCollider(Collider):
         super(TiledMapCollider, self).__init__(**kwargs)
         self.collidable_tiles = None
 
-    def get_collision_rectangles(self, game_object):
+    def get_collision_shapes(self, game_object):
         tiled_map = self.game_object.get_component(TiledMap)
         bounding_rect = game_object.get_component(BoundingRectangle)
 

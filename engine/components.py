@@ -119,6 +119,7 @@ class Collider(BaseComponent):
     def get_collision_shapes(self, game_object):
         """
         Returns a list of rectangles to use for collision detection.
+
         :param engine.GameObject game_object: Object we are testing collisions against
         :return pygame.Rect:
         """

@@ -10,6 +10,7 @@ class Renderer(object):
     def render(self, scene):
         """
         Renders current state of scene
+
         :param engine.scene.Scene scene: engine.scene.Scene
         """
         self.screen.fill((0, 0, 0))

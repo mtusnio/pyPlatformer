@@ -22,6 +22,7 @@ class Application(object):
     def init(self, width, height):
         """
         Initializes the game, runs pygame.init()
+
         :param int width: width of the game window
         :param int height: height of the game window
         """

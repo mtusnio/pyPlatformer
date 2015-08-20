@@ -19,6 +19,7 @@ class Scene(object):
     def add_object(self, obj):
         """
         Adds a new object to the scene and changes its scene & id variables
+
         :param engine.GameObject obj: Game object to add to the scene
         """
         if obj.id is not None or obj.scene:
@@ -32,6 +33,7 @@ class Scene(object):
     def remove_object(self, obj):
         """
         Removes an object from the scene, reverts the scene & id variables to None
+
         :param engine.gameobject.GameObject obj: Game object to remove from the scene
         """
         if obj.id is None or not self.objects.has_key(obj.id) or self.objects[obj.id] != obj:
@@ -44,6 +46,7 @@ class Scene(object):
     def setup_frame(self, dt):
         """
         Performs initial setup needed before every frame
+
         :param float dt: Time (in seconds) passed since the previous frame
         """
         self.dt = dt
@@ -51,6 +54,7 @@ class Scene(object):
     def simulate_preframe(self):
         """
         Renders a frame before rendering is done
+
         :param float dt: Frametime
         """
         self._check_collisions()
@@ -61,6 +65,7 @@ class Scene(object):
     def simulate_postframe(self):
         """
         Renders a frame after rendering is done
+
         :param float dt: Frametime
         """
         for obj in self.objects.values():
@@ -69,6 +74,7 @@ class Scene(object):
     def get_object_of_type(self, component_type):
         """
         Finds the first instance of an component of the specified type attached to an object
+
         :param engine.components.BaseComponent component_type: Class of the desired component
         :return: Found component, None if none exist
         """
@@ -78,6 +84,7 @@ class Scene(object):
     def get_objects_of_type(self, component_type):
         """
         Finds all objects which have the specified component
+
         :param engine.components.BaseComponent component_type: Class of the desired component
         :return: List of all components which were found
         """

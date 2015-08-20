@@ -28,6 +28,7 @@ class GameObject(object):
     def get_components(self, cls=None):
         """
         Returns all components which inherit from supplied class
+
         :param cls: Class of component to return, all will be returned if None
         :return list: List of all components fitting the parameters
         """
@@ -43,6 +44,7 @@ class GameObject(object):
     def get_component(self, cls):
         """
         Returns first found component of specified class
+
         :param cls: Class of component to return
         :return engine.components.BaseComponent: First component that matches the class, None if none found
         """
@@ -52,6 +54,7 @@ class GameObject(object):
     def has_component(self, cls):
         """
         Returns true if the object has the specified component
+
         :param cls: Class of component to check
         :return boolean: true if object has this component
         """
@@ -75,6 +78,7 @@ class GameObject(object):
     def transform(self):
         """
         Shortcut function, behaves exactly like get_component for the transform component
+
         :rtype Transform
         """
         return self.get_component(Transform)

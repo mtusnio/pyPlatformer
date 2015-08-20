@@ -1,6 +1,7 @@
 import pygame
 import components
 from engine.math import Vector2, Rect
+import struct
 
 
 class Renderer(object):
@@ -13,7 +14,11 @@ class Renderer(object):
 
         :param engine.scene.Scene scene: engine.scene.Scene
         """
-        self.screen.fill((0, 0, 0))
+        tiled_map = scene.get_object_of_type(components.TiledMap)
+        if tiled_map is not None:
+            self.screen.fill(tuple(ord(x) for x in tiled_map.map.background_color[1::].decode('hex')))
+        else:
+            self.screen.fill((0, 0, 0))
 
         camera_position = (Vector2(0, 0), 0)
         if scene.camera is not None:

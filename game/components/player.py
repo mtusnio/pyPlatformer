@@ -59,7 +59,7 @@ class Player(components.BaseComponent):
             logging.warning("Binding not found: " + str(e))
 
     def _handle_collisions(self, tiled_map, dt):
-        epsilon = 0.75
+        epsilon = 1
         transform = self.game_object.transform
         position = transform.position
         bounding_rectangle = self.game_object.get_component(components.BoundingRectangle).rectangle
@@ -86,7 +86,7 @@ class Player(components.BaseComponent):
             self._horizontal_collision(horizontal_rectangle, tiled_map, dt_velocity)
 
         if self.flying:
-            vertical_rectangle = bounding_rectangle.move(Vector2(0, dt_velocity.y))
+            vertical_rectangle = bounding_rectangle.move(Vector2(0, dt_velocity.y + epsilon * sign(dt_velocity.y)))
             tiles = tiled_map.get_tiles_for_area(vertical_rectangle, collidable=True)
             if len(tiles) > 0:
                 if self.velocity.y < 0:

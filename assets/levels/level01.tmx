@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="left-up" width="120" height="32" tilewidth="70" tileheight="70" nextobjectid="22">
+<map version="1.0" orientation="orthogonal" renderorder="left-up" width="120" height="32" tilewidth="70" tileheight="70" backgroundcolor="#a2daff" nextobjectid="22">
  <tileset firstgid="1" name="Map" tilewidth="70" tileheight="70" spacing="2">
   <image source="../spritesheets/tiles_spritesheet.png" width="914" height="936"/>
  </tileset>
@@ -3170,8 +3170,8 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="20"/>
+   <tile gid="20"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -3285,13 +3285,13 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="34"/>
+   <tile gid="34"/>
+   <tile gid="22"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="32"/>
+   <tile gid="32"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -5513,6 +5513,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="145"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -5632,10 +5633,9 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="148"/>
+   <tile gid="135"/>
+   <tile gid="135"/>
    <tile gid="135"/>
    <tile gid="135"/>
    <tile gid="136"/>
@@ -6201,7 +6201,7 @@
    <tile gid="104"/>
    <tile gid="104"/>
    <tile gid="104"/>
-   <tile gid="0"/>
+   <tile gid="21"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -6309,8 +6309,8 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="104"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
    <tile gid="153"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -6428,9 +6428,9 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="104"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
    <tile gid="153"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -6547,10 +6547,10 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="104"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
    <tile gid="153"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -6666,11 +6666,11 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="104"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
    <tile gid="153"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -6785,12 +6785,12 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="104"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
    <tile gid="153"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -6904,13 +6904,13 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="104"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
    <tile gid="153"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -7023,14 +7023,14 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="104"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
    <tile gid="153"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -7142,15 +7142,15 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="104"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
    <tile gid="153"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -7261,16 +7261,16 @@
    <tile gid="104"/>
    <tile gid="104"/>
    <tile gid="104"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
+   <tile gid="153"/>
    <tile gid="153"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -7697,8 +7697,8 @@
    <tile gid="0"/>
   </data>
  </layer>
- <objectgroup name="player_layer">
-  <object id="12" name="player1" gid="157" x="2310" y="1820" width="72" height="97">
+ <objectgroup name="creatures">
+  <object id="12" name="player1" gid="157" x="2310" y="1820" width="54" height="73">
    <properties>
     <property name="components" value="Player;Collider"/>
    </properties>

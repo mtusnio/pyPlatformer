@@ -1,9 +1,12 @@
 __author__ = 'Maverick'
 import pygame
 from engine.math import Vector2, Rect
+from collections import namedtuple
 import tiledmap
 import logging
 import sys
+import ast
+import copy
 
 
 class BaseComponent(object):
@@ -127,6 +130,8 @@ class TiledMap(Renderable):
     :type map_path: str
     :type map: tiledmap.TiledMap
     """
+    Tile = namedtuple("Tile", ['x', 'y', 'properties'])
+
     def __init__(self, **kwargs):
         super(TiledMap, self).__init__(**kwargs)
         map_path = kwargs.get("path", None)
@@ -136,6 +141,7 @@ class TiledMap(Renderable):
     def is_position_in_map(self, position):
         """
         Checks if the supplied world position is within map's bounds
+
         :param Vector2 position: World position
         :return: True if position is within map's bounds, False otherwise
         """
@@ -151,13 +157,15 @@ class TiledMap(Renderable):
 
         return True
 
-    def is_tile_in_map(self, x, y):
+    def is_tile_in_map(self, tile):
         """
         Checks if the x/y tile coordinates are within bounds of the map
-        :param int x:
-        :param int y:
+
+        :param tuple tile: Tuple containing x/y coordinates
         :return: True if the tile is within map bounds
         """
+        x = tile[0]
+        y = tile[1]
         if x < 0 or y < 0:
             return False
 
@@ -166,63 +174,63 @@ class TiledMap(Renderable):
 
         return True
 
-    def get_tile_properties(self, x, y):
-        """
-        Returns a dictionary containing all tile properties:
-            collidable - true if we can collide with this tile
-        :param int x:
-        :param int y:
-        :return: object containing all above properties
-        """
-        if not self.is_tile_in_map(x, y):
-            raise ValueError(self.__format_out_of_position(x, y))
-
-        properties = {}
-        if self._collidable_tiles is None:
-            self._create_collidable_set()
-
-        properties["collidable"] = (x,y) in self._collidable_tiles
-
-        return properties
-
-    def get_tile_for_position(self, position, extrapolate = False):
+    def get_tile_for_position(self, position, extrapolate=False):
         """
         Returns x/y tile coordinates for specified world position
+
         :param Vector2 position: World position
         :param bool extrapolate: If set to True it will return return potential out of bound tiles
         :return: Tuple containing x/y coordinates
         """
         if extrapolate is not True and not self.is_position_in_map(position):
-            raise ValueError(self.__format_out_of_position(position.x, position.y))
+            raise ValueError(self.__format_out_of_position(position[0], position[1]))
 
         relative_position = position - self.game_object.transform.position
-        return int(relative_position[0] // self.map.tilewidth), int(relative_position[1] // self.map.tileheight)
+        return self._get_tile_tuple(int(relative_position[0] // self.map.tilewidth),
+                               int(relative_position[1] // self.map.tileheight))
 
-    def get_tiles_for_area(self, area, extrapolate = False):
+    def get_tiles_for_area(self, area, extrapolate=False, *properties, **properties_values):
         """
         Finds all tiles that fit within the given area
+
         :param Rect area: Rectangle within which we want to grab all tiles
         :param bool extrapolate: If true it will also return tiles out of map bounds instead of raising an exception
+        :param properties: Filter tiles by properties they must possess
+        :param properties_values: Filter tiles by properties and their respective values
         :return list: List of all found tiles in right-down format
         """
         top_left = self.get_tile_for_position(area.topleft, extrapolate)
-        bottom_right = self.get_tile_for_position(area.bottomright, extrapolate)
+        # Bottom and right side should always be excluded
+        bottom_right_vec = Vector2(area.bottomright[0], area.bottomright[1])
+        if int(bottom_right_vec.x) == bottom_right_vec.x:
+            bottom_right_vec.x -= 0.3
+        if int(bottom_right_vec.y) == bottom_right_vec.y:
+            bottom_right_vec.y -= 0.3
+
+        bottom_right = self.get_tile_for_position(bottom_right_vec, extrapolate)
 
         ret = []
         for x in xrange(top_left[0], bottom_right[0] + 1):
             for y in xrange(top_left[1], bottom_right[1] + 1):
-                ret.append((x, y))
+                tile = self._get_tile_tuple(x, y)
+                if all(prop in tile.properties for prop in properties):
+                    if all(key in tile.properties and tile.properties[key] == value
+                                                          for key,value in properties_values.iteritems()):
+                        ret.append(tile)
 
         return ret
 
-    def get_rectangle_for_tile(self, x, y):
+    def get_rectangle_for_tile(self, tile):
         """
         Returns a rectangle which covers the tile at provided coordinates
-        :type x int
-        :type y int
+
+        :param tuple tile: Tuple containing x/y coordinates
         """
-        if not self.is_tile_in_map(x, y):
+        if not self.is_tile_in_map(tile):
             raise ValueError(self.__format_out_of_position(x, y))
+
+        x = tile[0]
+        y = tile[1]
 
         return Rect((x * self.map.tilewidth, y * self.map.tileheight), (self.map.tilewidth, self.map.tileheight))
 
@@ -259,42 +267,28 @@ class TiledMap(Renderable):
 
                 scene.add_object(game_object)
 
-    def _create_collidable_set(self):
-        tiled_map = self.game_object.get_component(TiledMap).map
-        assert isinstance(tiled_map, tiledmap.TiledMap)
+    def _get_tile_tuple(self, x, y):
+        properties = dict()
+        for layer in self.map.visible_tile_layers:
+            layer_properties = None
+            try:
+                if self.map.get_tile_gid(x, y, layer) != 0:
+                    layer_properties = self.map.layers[layer].properties
+            except ValueError:
+                continue
 
-        self._collidable_tiles = set()
-        for layer_num in tiled_map.visible_tile_layers:
-            layer = tiled_map.layers[layer_num]
-            if "collidable" in layer.properties and layer.properties["collidable"].lower() == "true":
-                for x, y, image in layer.tiles():
-                    self._collidable_tiles.add((x,y))
+            if layer_properties is None:
+                continue
+
+            for key,value in layer_properties.iteritems():
+                try:
+                    if value in ["true", "false"]:
+                        value = value.title()
+                    properties[key] = ast.literal_eval(value)
+                except (SyntaxError, ValueError) as e:
+                    properties[key] = value
+
+        return self.Tile(x=x, y=y, properties=properties)
 
     def __format_out_of_position(self, x, y):
         return "Position({0}, {1}) out of map".format(x, y)
-
-class TiledMapCollider(Collider):
-    def __init__(self, **kwargs):
-        super(TiledMapCollider, self).__init__(**kwargs)
-        self.collidable_tiles = None
-
-    def get_collision_shapes(self, game_object):
-        tiled_map = self.game_object.get_component(TiledMap)
-        bounding_rect = game_object.get_component(BoundingRectangle)
-
-        if tiled_map is None or bounding_rect is None:
-            return []
-
-        rect = bounding_rect.rectangle
-        top_left = tiled_map.get_tile_for_position(Vector2(rect.topleft), True)
-        bottom_right = tiled_map.get_tile_for_position(Vector2(rect.bottomright), True)
-
-        collidable_rectangles = []
-        for x in xrange(top_left[0], bottom_right[0] + 1):
-            for y in xrange(top_left[1], bottom_right[1] + 1):
-                if tiled_map.get_tile_properties(x, y)["collidable"]:
-                    rectangle = tiled_map.get_rectangle_for_tile(x, y)
-                    collidable_rectangles.append(rectangle)
-
-        return collidable_rectangles
-

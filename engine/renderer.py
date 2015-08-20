@@ -1,7 +1,6 @@
 import pygame
 import components
-import copy
-from engine import math
+from engine.math import Vector2, Rect
 
 
 class Renderer(object):
@@ -15,12 +14,12 @@ class Renderer(object):
         """
         self.screen.fill((0, 0, 0))
 
-        camera_position = (math.Vector2(0, 0), 0)
+        camera_position = (Vector2(0, 0), 0)
         if scene.camera is not None:
             camera = scene.camera.get_component(components.Camera)
             transform = scene.camera.get_component(components.Transform)
             if transform is not None:
-                camera_position = (math.Vector2(transform.position[0], transform.position[1]), transform.rotation)
+                camera_position = (Vector2(transform.position[0], transform.position[1]), transform.rotation)
 
         camera_position[0][0] -= self.screen.get_width()/2
         camera_position[0][1] -= self.screen.get_height()/2
@@ -32,18 +31,20 @@ class Renderer(object):
                     self._render(rend, camera_position)
 
     def _render(self, renderable, camera_position):
+        surface_rect = self.screen.get_rect(center=camera_position[0] + Vector2(self.screen.get_width()/2, self.screen.get_height()/2))
+
         obj_transform = renderable.game_object.get_component(components.Transform)
         if obj_transform is not None:
-            position = math.Vector2(obj_transform.position[0], obj_transform.position[1]) - camera_position[0]
+            position = Vector2(obj_transform.position[0], obj_transform.position[1]) - camera_position[0]
             rotation = obj_transform.rotation - camera_position[1]
             scale = obj_transform.scale
         else:
-            position = math.Vector2(0, 0)
+            position = Vector2(0, 0)
             rotation = 0
             scale = 1
 
         if isinstance(renderable, components.SpriteRenderer):
-            if renderable.image is not None:
+            if renderable.image is not None and surface_rect.colliderect(renderable.image.get_rect(center=obj_transform.position)):
                 self._render_image(renderable.image, position, rotation, scale)
         elif isinstance(renderable, components.TiledMap):
             tiled_map = renderable.map
@@ -52,8 +53,9 @@ class Renderer(object):
                 tile_height = tiled_map.tileheight
                 for layer in tiled_map.visible_tile_layers:
                     for x, y, image in tiled_map.layers[layer].tiles():
-                        tile_position = math.Vector2(x * tile_width + tile_width/2, y * tile_height + tile_height/2)
-                        self._render_image(image, tile_position + position, rotation, scale)
+                        tile_position = Vector2(x * tile_width + tile_width/2, y * tile_height + tile_height/2)
+                        if renderable.get_rectangle_for_tile((x,y)).colliderect(surface_rect):
+                            self._render_image(image, tile_position + position, rotation, scale)
 
     def _render_image(self, image, position, rotation, scale):
         surface = pygame.transform.rotozoom(image, rotation, scale)

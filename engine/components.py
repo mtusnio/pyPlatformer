@@ -12,6 +12,8 @@ import copy
 class BaseComponent(object):
     """
     :type game_object: engine.GameObject
+    :type scene: engine.Scene
+    :type transform: engine.components.Transform
     """
     def __init__(self, **kwargs):
         self.game_object = None
@@ -27,6 +29,27 @@ class BaseComponent(object):
         Runs once per frame after rendering
         """
         pass
+
+    # Shortcuts so that we don't have to go through game_object every time
+    @property
+    def scene(self):
+        return self.game_object.scene
+
+    @property
+    def transform(self):
+        return self.game_object.transform
+
+    def get_component(self, cls):
+        """
+        Same as game_object.get_component
+        """
+        return self.game_object.get_component(cls)
+
+    def get_components(self, cls):
+        """
+        Same as game_object.get_components
+        """
+        return self.game_object.get_components(cls)
 
 
 class Camera(BaseComponent):

@@ -3,6 +3,7 @@ import pygame
 import renderer
 import sys
 from engine.input import Input, KeyStatus
+import logging
 
 
 class MissingSceneError(Exception):
@@ -36,12 +37,24 @@ class Application(object):
         if self.scene is None:
             raise MissingSceneError()
 
+        level = logging.INFO
+        if sys.flags.debug:
+            level = logging.DEBUG
+
+        logging.basicConfig(format='%(levelname)s:%(message)s', level=level)
+
+        fps_report = 0
         while True:
             clock.tick()
             if len(pygame.event.get(pygame.QUIT)) > 0:
                 sys.exit()
 
             dt = 1/clock.get_fps() if clock.get_fps() != 0 else 0.04
+
+            fps_report += dt
+            if fps_report >= 5:
+                fps_report = 0
+                logging.info("FPS: {fps}".format(fps=1.0/dt))
 
             self._handle_input(pygame.event.get([pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN,
                                                  pygame.MOUSEBUTTONUP, pygame.MOUSEMOTION]))

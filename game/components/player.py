@@ -2,7 +2,7 @@ __author__ = 'Maverick'
 from engine import Input
 from engine.components import BaseComponent
 from engine.input import BindingDoesNotExist
-from engine.math.functions import sign
+from engine.math.functions import sign, clamp
 from game.components import CharacterController
 import logging
 
@@ -47,6 +47,6 @@ class Player(BaseComponent):
             logging.warning("Binding not found: " + str(e))
 
         # Velocity clamping
-        controller.velocity.x = sorted((-self.MAX_HORIZONTAL_SPEED, controller.velocity.x, self.MAX_HORIZONTAL_SPEED))[1]
-        controller.velocity.y = sorted((-self.MAX_VERTICAL_SPEED, controller.velocity.y, self.MAX_VERTICAL_SPEED))[1]
+        controller.velocity.x = clamp(controller.velocity.x, -self.MAX_HORIZONTAL_SPEED, self.MAX_HORIZONTAL_SPEED)
+        controller.velocity.y = clamp(controller.velocity.y, -self.MAX_VERTICAL_SPEED, self.MAX_VERTICAL_SPEED)
 

@@ -10,3 +10,10 @@ def bits(n):
         b = n & (~n+1)
         yield b
         n ^= b
+
+
+def clamp(val, min, max):
+    if min > max:
+        raise ValueError
+
+    return sorted([min, val, max])[1]

@@ -8,12 +8,12 @@ from engine.math.functions import sign
 class CharacterController(BaseComponent):
     DEFAULT_GRAVITY = 825
 
-    def __init__(self, **kwargs):
-        super(CharacterController, self).__init__(**kwargs)
+    def __init__(self, gravity=DEFAULT_GRAVITY):
+        super(CharacterController, self).__init__()
         self.flying = True
         self.velocity = Vector2(0, 0)
         self.applied_velocity = Vector2(0, 0)
-        self.gravity = kwargs.get("gravity", self.DEFAULT_GRAVITY)
+        self.gravity = gravity
 
     def update(self):
         tiled_map = self.game_object.scene.get_object_of_type(TiledMap)

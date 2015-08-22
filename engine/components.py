@@ -15,7 +15,7 @@ class BaseComponent(object):
     :type scene: engine.Scene
     :type transform: engine.components.Transform
     """
-    def __init__(self, **kwargs):
+    def __init__(self):
         self.game_object = None
 
     def update(self):
@@ -56,17 +56,17 @@ class Camera(BaseComponent):
     """
     :type fov: float
     """
-    def __init__(self, **kwargs):
-        super(Camera, self).__init__(**kwargs)
-        self.fov = kwargs.get("fov", 80)
+    def __init__(self, fov=80):
+        super(Camera, self).__init__()
+        self.fov = fov
 
 
 class Renderable(BaseComponent):
     """
     :type should_render: bool
     """
-    def __init__(self, **kwargs):
-        super(Renderable, self).__init__(**kwargs)
+    def __init__(self):
+        super(Renderable, self).__init__()
         self.should_render = True
 
 
@@ -76,15 +76,14 @@ class SpriteRenderer(Renderable):
     :type horizontal_flip: bool
     :type vertical_flip: bool
     """
-    def __init__(self, **kwargs):
-        super(SpriteRenderer, self).__init__(**kwargs)
-        if "image" not in kwargs:
-            image_path = kwargs.get("path", None)
+    def __init__(self, image_path=None, image=None, horizontal_flip=False, vertical_flip=False):
+        super(SpriteRenderer, self).__init__()
+        if image is None:
             self.image = pygame.image.load(image_path) if image_path is not None else None
         else:
-            self.image = kwargs.get("image", None)
-        self.horizontal_flip = False
-        self.vertical_flip = False
+            self.image = image
+        self.horizontal_flip = horizontal_flip
+        self.vertical_flip = vertical_flip
 
 
 class Transform(BaseComponent):
@@ -93,11 +92,13 @@ class Transform(BaseComponent):
     :type rotation: float
     :type scale: float
     """
-    def __init__(self, **kwargs):
-        super(Transform, self).__init__(**kwargs)
-        self._position = kwargs.get("position", Vector2(0, 0))
-        self.rotation = kwargs.get("rotation", 0)
-        self.scale = kwargs.get("scale", 1)
+    def __init__(self, position=None, rotation=0, scale=1):
+        super(Transform, self).__init__()
+        if position is None:
+            position = Vector2(0, 0)
+        self._position = position
+        self.rotation = rotation
+        self.scale = scale
 
     @property
     def position(self):
@@ -114,8 +115,8 @@ class BoundingRectangle(BaseComponent):
     """
     Base class for all bounding rectangles that we need to calculate
     """
-    def __init__(self, **kwargs):
-        super(BoundingRectangle, self).__init__(**kwargs)
+    def __init__(self,):
+        super(BoundingRectangle, self).__init__()
 
     @property
     def rectangle(self):
@@ -126,8 +127,8 @@ class SpriteBoundingRectangle(BoundingRectangle):
     """
     Bounding rectangle calculated using the sprite image
     """
-    def __init__(self, **kwargs):
-        super(SpriteBoundingRectangle, self).__init__(**kwargs)
+    def __init__(self):
+        super(SpriteBoundingRectangle, self).__init__()
 
     @property
     def rectangle(self):
@@ -139,8 +140,8 @@ class Collider(BaseComponent):
     Collider class which can expanded for custom collisions, by default uses BoundingRectangle
     on both objects to check for collisions.
     """
-    def __init__(self, **kwargs):
-        super(Collider, self).__init__(**kwargs)
+    def __init__(self):
+        super(Collider, self).__init__()
 
     def get_collision_shapes(self, game_object):
         """
@@ -154,16 +155,13 @@ class Collider(BaseComponent):
 
 class TiledMap(Renderable):
     """
-    :type map_path: str
     :type map: tiledmap.TiledMap
     """
     Tile = namedtuple("Tile", ['x', 'y', 'properties'])
 
-    def __init__(self, **kwargs):
-        super(TiledMap, self).__init__(**kwargs)
-        map_path = kwargs.get("path", None)
+    def __init__(self, map_path=None):
+        super(TiledMap, self).__init__()
         self.map = tiledmap.load(map_path) if map_path is not None else None
-        self._collidable_tiles = None
 
     def is_position_in_map(self, position):
         """

@@ -72,8 +72,9 @@ class Renderable(BaseComponent):
 
 class SpriteRenderer(Renderable):
     """
-    :type image_path: str
     :type image: pygame.Surface
+    :type horizontal_flip: bool
+    :type vertical_flip: bool
     """
     def __init__(self, **kwargs):
         super(SpriteRenderer, self).__init__(**kwargs)
@@ -82,6 +83,8 @@ class SpriteRenderer(Renderable):
             self.image = pygame.image.load(image_path) if image_path is not None else None
         else:
             self.image = kwargs.get("image", None)
+        self.horizontal_flip = False
+        self.vertical_flip = False
 
 
 class Transform(BaseComponent):

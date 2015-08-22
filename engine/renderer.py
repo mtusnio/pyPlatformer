@@ -50,8 +50,10 @@ class Renderer(object):
             scale = 1
 
         if isinstance(renderable, components.SpriteRenderer):
-            if renderable.image is not None and surface_rect.colliderect(renderable.image.get_rect(center=obj_transform.position)):
-                self._render_image(renderable.image, position, rotation, scale)
+            if renderable.image is not None and \
+                surface_rect.colliderect(renderable.image.get_rect(center=obj_transform.position)):
+                self._render_image(renderable.image, position, rotation, scale,
+                                   renderable.vertical_flip, renderable.horizontal_flip)
         elif isinstance(renderable, components.TiledMap):
             tiled_map = renderable.map
             if tiled_map is not None:
@@ -63,6 +65,9 @@ class Renderer(object):
                         if renderable.get_rectangle_for_tile((x,y)).colliderect(surface_rect):
                             self._render_image(image, tile_position + position, rotation, scale)
 
-    def _render_image(self, image, position, rotation, scale):
+    def _render_image(self, image, position, rotation, scale, ver_flip=False, hor_flip=False):
         surface = pygame.transform.rotozoom(image, rotation, scale)
+        if ver_flip or hor_flip:
+            surface = pygame.transform.flip(surface, hor_flip, ver_flip)
+
         self.screen.blit(surface, surface.get_rect(center=position))

@@ -76,12 +76,13 @@ class SpriteRenderer(Renderable):
     :type horizontal_flip: bool
     :type vertical_flip: bool
     """
-    def __init__(self, image_path=None, image=None, horizontal_flip=False, vertical_flip=False):
+    def __init__(self, image=None, horizontal_flip=False, vertical_flip=False):
         super(SpriteRenderer, self).__init__()
-        if image is None:
-            self.image = pygame.image.load(image_path) if image_path is not None else None
+        if isinstance(image, basestring):
+            self.image = pygame.image.load(image)
         else:
             self.image = image
+
         self.horizontal_flip = horizontal_flip
         self.vertical_flip = vertical_flip
 

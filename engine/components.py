@@ -412,7 +412,12 @@ class TiledMap(Renderable):
         for group in tiled_map.visible_object_groups:
             for obj in tiled_map.layers[group]:
                 game_object = GameObject()
-                obj_position = Vector2(obj.x + obj.image.get_width()/2, obj.y + obj.image.get_height()/2)
+                translation = Vector2(0, 0)
+                if obj.image is not None:
+                    translation.x = obj.image.get_width()/2
+                    translation.y = obj.image.get_height()/2
+
+                obj_position = Vector2(obj.x, obj.y) + translation
                 game_object.add_components(Transform(position=obj_position))
                 if obj.image is not None:
                     animation_data = obj.properties.get("animation_data", None)

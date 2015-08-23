@@ -1,6 +1,6 @@
 __author__ = 'Maverick'
 import pygame
-import renderer
+from . import renderer
 import sys
 from engine.input import Input, KeyStatus
 import logging
@@ -70,7 +70,7 @@ class Application(object):
     def _handle_input(self, events):
         key_status = Input.key_status
 
-        for key,val in key_status.iteritems():
+        for key,val in key_status.items():
             if val == KeyStatus.DEPRESSED_THIS_FRAME:
                 key_status[key] = KeyStatus.DEPRESSED
             elif val == KeyStatus.PRESSED_THIS_FRAME:

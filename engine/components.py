@@ -2,7 +2,7 @@ __author__ = 'Maverick'
 import pygame
 from engine.math import Vector2, Rect
 from collections import namedtuple
-import tiledmap
+from . import tiledmap
 import logging
 import sys
 import ast
@@ -91,7 +91,7 @@ class SpriteRenderer(Renderable):
         if animation_data is None and default_animation is not None:
             raise ValueError
 
-        if isinstance(image, basestring):
+        if isinstance(image, str):
             self.image = pygame.image.load(image)
         else:
             self.image = image
@@ -127,7 +127,7 @@ class SpriteRenderer(Renderable):
 
         :param str, dict animation_data: Loaded animation data or path to json file
         """
-        if isinstance(animation_data, basestring):
+        if isinstance(animation_data, str):
             try:
                 animation_data = json.load(open(animation_data, 'r'))
             except IOError:
@@ -141,13 +141,13 @@ class SpriteRenderer(Renderable):
             try:
                 self.animation_set_name = animation_data["name"]
                 self.animations = {}
-                for key,value in animation_data.iteritems():
+                for key,value in animation_data.items():
                     if key != "name":
                         data = self._Animation(name=key, speed=value.get("speed", 0), frames=value.get("frames", []))
                         if key in self.animations:
                             raise ValueError
 
-                        for i in xrange(0, len(data.frames)):
+                        for i in range(0, len(data.frames)):
                             coords = data.frames[i].split(" ")
                             data.frames[i] = Rect(int(coords[0]), int(coords[1]), int(coords[2]), int(coords[3]))
 
@@ -375,12 +375,12 @@ class TiledMap(Renderable):
         bottom_right = self.get_tile_for_position(bottom_right_vec, extrapolate)
 
         ret = []
-        for x in xrange(top_left[0], bottom_right[0] + 1):
-            for y in xrange(top_left[1], bottom_right[1] + 1):
+        for x in range(top_left[0], bottom_right[0] + 1):
+            for y in range(top_left[1], bottom_right[1] + 1):
                 tile = self._get_tile_tuple(x, y)
                 if all(prop in tile.properties for prop in properties):
                     if all(key in tile.properties and tile.properties[key] == value
-                                                          for key,value in properties_values.iteritems()):
+                                                          for key,value in properties_values.items()):
                         ret.append(tile)
 
         return ret
@@ -446,7 +446,7 @@ class TiledMap(Renderable):
             if layer_properties is None:
                 continue
 
-            for key,value in layer_properties.iteritems():
+            for key,value in layer_properties.items():
                 try:
                     if value in ["true", "false"]:
                         value = value.title()

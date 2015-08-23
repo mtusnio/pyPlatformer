@@ -1,5 +1,5 @@
 import pygame
-import components
+from . import components
 from engine.math import Vector2, Rect
 import struct
 
@@ -16,7 +16,9 @@ class Renderer(object):
         """
         tiled_map = scene.get_object_of_type(components.TiledMap)
         if tiled_map is not None:
-            self.screen.fill(tuple(ord(x) for x in tiled_map.map.background_color[1::].decode('hex')))
+            color = ["".join(tiled_map.map.background_color[i:i+2])
+                     for i in range(1, len(tiled_map.map.background_color) - 1, 2)]
+            self.screen.fill(tuple(int(x, 16) for x in color))
         else:
             self.screen.fill((0, 0, 0))
 
@@ -30,7 +32,7 @@ class Renderer(object):
         camera_position[0][0] -= self.screen.get_width()/2
         camera_position[0][1] -= self.screen.get_height()/2
 
-        for obj in scene.objects.values():
+        for obj in list(scene.objects.values()):
             renderables = obj.get_components(components.Renderable)
             for rend in renderables:
                 if rend.should_render is True:

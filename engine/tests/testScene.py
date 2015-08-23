@@ -5,14 +5,14 @@ from engine import Scene, GameObject, components
 class TestSceneObjects(unittest.TestCase):
     def test_scene_adds_objects(self):
         scene = Scene(None)
-        objects = [GameObject() for x in xrange(0, 5000)]
+        objects = [GameObject() for x in range(0, 5000)]
         for obj in objects:
             scene.add_object(obj)
         self.assertEqual(len(scene.objects), len(objects))
         self.assertEqual(set(scene.objects.values()), set(objects))
 
     def test_scene_assigns_unique_ids(self):
-        rng = range(0, 10000)
+        rng = list(range(0, 10000))
         scene = Scene(None)
         for obj in [GameObject() for x in rng]:
             scene.add_object(obj)
@@ -39,7 +39,7 @@ class TestSceneObjects(unittest.TestCase):
 
     def test_removeobject(self):
         scene = Scene(None)
-        objects = [GameObject() for x in xrange(0, 1000)]
+        objects = [GameObject() for x in range(0, 1000)]
         for obj in objects:
             scene.add_object(obj)
 

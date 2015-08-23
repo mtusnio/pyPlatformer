@@ -2,7 +2,6 @@ __author__ = 'Maverick'
 
 from pytmx.util_pygame import handle_transformation, smart_convert
 from pytmx import TiledMap
-import engine, components, math
 import pygame
 import logging
 

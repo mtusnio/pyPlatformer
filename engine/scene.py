@@ -1,5 +1,5 @@
 import collections
-from components import *
+from .components import *
 
 
 class Scene(object):
@@ -36,7 +36,7 @@ class Scene(object):
 
         :param engine.gameobject.GameObject obj: Game object to remove from the scene
         """
-        if obj.id is None or not self.objects.has_key(obj.id) or self.objects[obj.id] != obj:
+        if obj.id is None or obj.id not in self.objects or self.objects[obj.id] != obj:
             raise ValueError("Object not found in scene")
 
         del self.objects[obj.id]
@@ -59,7 +59,7 @@ class Scene(object):
         """
         self._check_collisions()
 
-        for obj in self.objects.values():
+        for obj in list(self.objects.values()):
             obj.update()
 
     def simulate_postframe(self):
@@ -68,7 +68,7 @@ class Scene(object):
 
         :param float dt: Frametime
         """
-        for obj in self.objects.values():
+        for obj in list(self.objects.values()):
             obj.update_postframe()
 
     def get_object_of_type(self, component_type):
@@ -89,7 +89,7 @@ class Scene(object):
         :return: List of all components which were found
         """
         ret = []
-        for key, obj in self.objects.iteritems():
+        for key, obj in self.objects.items():
             component = obj.get_component(component_type)
             if component is not None:
                 ret.append(component)
@@ -97,10 +97,10 @@ class Scene(object):
 
     def _check_collisions(self):
         checked = set()
-        for obj1 in self.objects.values():
+        for obj1 in list(self.objects.values()):
             collider1 = obj1.get_component(Collider)
             if collider1 is not None:
-                for obj2 in self.objects.values():
+                for obj2 in list(self.objects.values()):
                     if obj1 is not obj2 and (obj1, obj2) not in checked:
                         collider2 = obj2.get_component(Collider)
                         if collider2 is not None:

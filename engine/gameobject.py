@@ -1,4 +1,4 @@
-from components import Transform
+from .components import Transform
 
 
 class GameObject(object):

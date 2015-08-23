@@ -1,7 +1,7 @@
 __author__ = 'Maverick'
 from engine import GameObject, Scene, Application, Input
 import engine.components
-import components
+from . import components
 import pygame
 from engine import tiledmap
 

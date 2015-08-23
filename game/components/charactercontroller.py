@@ -1,6 +1,6 @@
 __author__ = 'Maverick'
 
-from engine.components import BaseComponent, BoundingRectangle, TiledMap, SpriteRenderer
+from engine.components import BaseComponent, BoundingRectangle, StaticBoundingRectangle, TiledMap, SpriteRenderer
 from engine.math import Vector2
 from engine.math.functions import sign
 
@@ -14,6 +14,9 @@ class CharacterController(BaseComponent):
         self.velocity = Vector2(0, 0)
         self.applied_velocity = Vector2(0, 0)
         self.gravity = gravity
+
+    def on_add(self):
+        self.game_object.add_components(StaticBoundingRectangle(52, 90))
 
     def update(self):
         tiled_map = self.game_object.scene.get_object_of_type(TiledMap)
@@ -65,12 +68,8 @@ class CharacterController(BaseComponent):
         if self.velocity.x != 0:
             move_rectangle = bounding_rectangle.move(Vector2(dt_velocity.x + epsilon * sign(dt_velocity.x), dt_velocity.y))
             self._horizontal_collision(move_rectangle, tiled_map, dt_velocity)
-            if self.velocity.x != 0:
-                if self.velocity.x < 0:
-                    sprite_renderer.horizontal_flip = True
-                elif self.velocity.x > 0:
-                    sprite_renderer.horizontal_flip = False
 
+        self._handle_animations()
 
         self.applied_velocity = dt_velocity
         transform.position = position + self.applied_velocity
@@ -79,3 +78,20 @@ class CharacterController(BaseComponent):
         if len(tiled_map.get_tiles_for_area(rectangle, collidable=True)) > 0:
             self.velocity.x = 0
             dt_velocity.x = 0
+
+    def _handle_animations(self):
+        sprite_renderer = self.get_component(SpriteRenderer)
+
+        if self.velocity.x < 0:
+            sprite_renderer.horizontal_flip = True
+        elif self.velocity.x > 0:
+            sprite_renderer.horizontal_flip = False
+
+        if not self.flying:
+            if self.velocity.x != 0:
+                if not self.flying and sprite_renderer.playing_animation_name != "walk":
+                    sprite_renderer.play_animation("walk", True)
+            elif sprite_renderer.playing_animation_name != "stand":
+                sprite_renderer.play_animation("stand", True)
+        else:
+            sprite_renderer.play_animation("jump", True)

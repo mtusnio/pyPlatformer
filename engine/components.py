@@ -6,7 +6,8 @@ import tiledmap
 import logging
 import sys
 import ast
-import copy
+import json
+import os
 
 
 class BaseComponent(object):
@@ -17,6 +18,12 @@ class BaseComponent(object):
     """
     def __init__(self):
         self.game_object = None
+
+    def on_add(self):
+        """
+        Runs once when the component is added to a game object
+        """
+        pass
 
     def update(self):
         """
@@ -76,8 +83,14 @@ class SpriteRenderer(Renderable):
     :type horizontal_flip: bool
     :type vertical_flip: bool
     """
-    def __init__(self, image=None, horizontal_flip=False, vertical_flip=False):
+    _Animation = namedtuple("_Animation", ["name", "speed", "frames"])
+
+    def __init__(self, image=None, horizontal_flip=False, vertical_flip=False, animation_data=None,
+                 default_animation=None):
         super(SpriteRenderer, self).__init__()
+        if animation_data is None and default_animation is not None:
+            raise ValueError
+
         if isinstance(image, basestring):
             self.image = pygame.image.load(image)
         else:
@@ -85,6 +98,116 @@ class SpriteRenderer(Renderable):
 
         self.horizontal_flip = horizontal_flip
         self.vertical_flip = vertical_flip
+
+        self.animation_set_name = None
+        self.animations = None
+
+        self.playing_animation = None
+        self.frame_index = None
+        self.frame_time = 0.0
+        self.animation_looping = False
+        self.animation_speed_rate = 1.0
+
+        self.parse_animations(animation_data)
+        if default_animation is not None:
+            self.play_animation(default_animation)
+
+    @property
+    def playing_animation_name(self):
+        """
+        :return: Empty string if no animation is playing, otherwise name of the animation
+        """
+        if self.playing_animation is None:
+            return ""
+        return self.playing_animation.name
+
+    def parse_animations(self, animation_data):
+        """
+        Parses the specified file/data to recover all possible animations
+
+        :param str, dict animation_data: Loaded animation data or path to json file
+        """
+        if isinstance(animation_data, basestring):
+            try:
+                animation_data = json.load(open(animation_data, 'r'))
+            except IOError:
+                logging.warning("Could not open {path}".format(path=animation_data))
+                animation_data = None
+            except ValueError:
+                logging.warning("Could not parse {path}".format(path=animation_data))
+                animation_data = None
+
+        if animation_data is not None:
+            try:
+                self.animation_set_name = animation_data["name"]
+                self.animations = {}
+                for key,value in animation_data.iteritems():
+                    if key != "name":
+                        data = self._Animation(name=key, speed=value.get("speed", 0), frames=value.get("frames", []))
+                        if key in self.animations:
+                            raise ValueError
+
+                        for i in xrange(0, len(data.frames)):
+                            coords = data.frames[i].split(" ")
+                            data.frames[i] = Rect(int(coords[0]), int(coords[1]), int(coords[2]), int(coords[3]))
+
+                        self.animations[key] = data
+            except IndexError as e:
+                logging.warning("Could not get animation data index")
+                self.animation_set_name = None
+                self.animations = None
+            except ValueError as e:
+                logging.warning("Faulty animation data: {error}".format(error=e.message))
+                self.animation_set_name = None
+                self.animations = None
+
+    def play_animation(self, animation_name, loop=False, speed_rate=1.0):
+        """
+        Plays a selected animation from the parsed set
+
+        :param str animation_name: Name of the animation to play
+        """
+        if animation_name in self.animations:
+            self.playing_animation = self.animations[animation_name]
+            self.frame_index = 0
+            self.frame_time = 0.0
+            self.animation_looping = loop
+            self.animation_speed_rate = speed_rate
+            self._update_animation_image()
+        else:
+            logging.warning("No animation {animation} found".format(animation=animation_name))
+
+    def stop_animation(self):
+        """
+        Stops any ongoing animation retaining current image as last frame of animation
+        """
+        self.playing_animation = None
+        self.frame_index = 0
+        self.frame_time = 0
+
+    def update(self):
+        if self.playing_animation is not None:
+            animation = self.playing_animation
+            self.frame_time += self.game_object.scene.dt
+
+            if self.frame_time >= animation.speed/self.animation_speed_rate:
+                old_index = self.frame_index
+                if self.animation_looping:
+                    self.frame_index = (self.frame_index + 1) % len(animation.frames)
+                elif self.frame_index + 1 >= len(animation.frames):
+                    self.stop_animation()
+                    return
+                self.frame_time = 0.0
+                if old_index != self.frame_index:
+                    self._update_animation_image()
+
+    def _update_animation_image(self):
+        parent = self.image.get_parent()
+        if parent is not None:
+            self.image = parent.subsurface(self.playing_animation.frames[self.frame_index])
+        else:
+            self.stop_animation()
+            logging.warning("Cannot find parent image for animation update")
 
 
 class Transform(BaseComponent):
@@ -134,6 +257,22 @@ class SpriteBoundingRectangle(BoundingRectangle):
     @property
     def rectangle(self):
         return self.game_object.get_component(SpriteRenderer).image.get_rect(center=self.game_object.transform.position)
+
+
+class StaticBoundingRectangle(BoundingRectangle):
+    """
+    Statically set bounding rectangle
+    """
+    def __init__(self, width, height):
+        super(StaticBoundingRectangle, self).__init__()
+        self.width = width
+        self.height = height
+
+    @property
+    def rectangle(self):
+        r = Rect(0, 0, self.width, self.height)
+        r.center = self.game_object.transform.position
+        return r
 
 
 class Collider(BaseComponent):
@@ -275,7 +414,8 @@ class TiledMap(Renderable):
                 obj_position = Vector2(obj.x + obj.image.get_width()/2, obj.y + obj.image.get_height()/2)
                 game_object.add_components(Transform(position=obj_position))
                 if obj.image is not None:
-                    game_object.add_components(SpriteRenderer(image=obj.image), SpriteBoundingRectangle())
+                    animation_data = obj.properties.get("animation_data", None)
+                    game_object.add_components(SpriteRenderer(image=obj.image, animation_data=animation_data))
 
                 obj_components = obj.properties.get("components", "")
                 for component_name in obj_components.split(";"):

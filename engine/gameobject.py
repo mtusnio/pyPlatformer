@@ -17,6 +17,9 @@ class GameObject(object):
         for component in components:
             component.game_object = self
 
+        for component in components:
+            component.on_add()
+
     def remove_components(self, *components):
         """
         :param components: List of components to remove

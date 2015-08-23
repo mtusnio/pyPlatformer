@@ -54,7 +54,7 @@ class TestGameObjectComponents(unittest.TestCase):
 
     def test_get_all_components(self):
         obj = GameObject()
-        test_components = [engine.components.SpriteRenderer, engine.components.Transform, engine.components.SpriteBoundingRectangle]
+        test_components = [engine.components.SpriteRenderer(), engine.components.Transform(), engine.components.SpriteBoundingRectangle()]
         obj.add_components(*test_components)
 
         self.assertSetEqual(set(test_components), set(obj.get_components()))

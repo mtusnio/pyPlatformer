@@ -263,15 +263,17 @@ class StaticBoundingRectangle(BoundingRectangle):
     """
     Statically set bounding rectangle
     """
-    def __init__(self, width, height):
+    def __init__(self, width, height, x=0, y=0):
         super(StaticBoundingRectangle, self).__init__()
         self.width = width
         self.height = height
+        self.x = x
+        self.y = 0
 
     @property
     def rectangle(self):
         r = Rect(0, 0, self.width, self.height)
-        r.center = self.game_object.transform.position
+        r.center = self.game_object.transform.position + Vector2(self.x, self.y)
         return r
 
 
@@ -403,7 +405,6 @@ class TiledMap(Renderable):
         """
         Fills this object's scene with objects as described by tiled_map
         """
-        import game.components as game_components
         from engine import GameObject
 
         tiled_map = self.map
@@ -417,19 +418,7 @@ class TiledMap(Renderable):
                     animation_data = obj.properties.get("animation_data", None)
                     game_object.add_components(SpriteRenderer(image=obj.image, animation_data=animation_data))
 
-                obj_components = obj.properties.get("components", "")
-                for component_name in obj_components.split(";"):
-                    component_class = None
-                    module = sys.modules[__name__]
-                    if hasattr(module, component_name):
-                        component_class = getattr(module, component_name)
-                    elif hasattr(game_components, component_name):
-                        component_class = getattr(game_components, component_name)
-
-                    if component_class is not None:
-                        game_object.add_components(component_class())
-                    else:
-                        logging.warning("Could not find class: '{0}'".format(component_name))
+                self._resolve_components(obj.properties.get("components", "").split(";"), game_object)
 
                 scene.add_object(game_object)
 
@@ -455,6 +444,21 @@ class TiledMap(Renderable):
                     properties[key] = value
 
         return self.Tile(x=x, y=y, properties=properties)
+
+    def _resolve_components(self, components, game_object):
+        import game.components as game_components
+        for component_name in components:
+            component_class = None
+            module = sys.modules[__name__]
+            if hasattr(module, component_name):
+                component_class = getattr(module, component_name)
+            elif hasattr(game_components, component_name):
+                component_class = getattr(game_components, component_name)
+
+            if component_class is not None:
+                game_object.add_components(component_class())
+            else:
+                logging.warning("Could not find class: '{0}'".format(component_name))
 
     def __format_out_of_position(self, x, y):
         return "Position({0}, {1}) out of map".format(x, y)

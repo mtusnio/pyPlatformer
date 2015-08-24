@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="left-up" width="120" height="32" tilewidth="70" tileheight="70" backgroundcolor="#a2daff" nextobjectid="22">
+<map version="1.0" orientation="orthogonal" renderorder="left-up" width="120" height="32" tilewidth="70" tileheight="70" backgroundcolor="#a2daff" nextobjectid="23">
  <tileset firstgid="1" name="Map" tilewidth="70" tileheight="70" spacing="2">
   <image source="../spritesheets/tiles_spritesheet.png" width="914" height="936"/>
  </tileset>
  <tileset firstgid="157" name="Player" tilewidth="72" tileheight="97" spacing="1">
   <image source="../spritesheets/p1_spritesheet.png" width="508" height="288"/>
+ </tileset>
+ <tileset firstgid="169" name="fly_spritesheet" tilewidth="72" tileheight="36" spacing="1" margin="2">
+  <image source="../spritesheets/fly_spritesheet.png" width="214" height="40"/>
  </tileset>
  <layer name="Background" width="120" height="32">
   <data>
@@ -5754,9 +5757,9 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
    <tile gid="155"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -5874,9 +5877,9 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
    <tile gid="155"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -5992,11 +5995,11 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="148"/>
+   <tile gid="123"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
    <tile gid="155"/>
    <tile gid="136"/>
    <tile gid="0"/>
@@ -6113,10 +6116,10 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
    <tile gid="155"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -6233,10 +6236,10 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
    <tile gid="155"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -6353,10 +6356,10 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
    <tile gid="155"/>
    <tile gid="136"/>
    <tile gid="0"/>
@@ -6473,10 +6476,10 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
    <tile gid="155"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -6593,10 +6596,10 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
    <tile gid="155"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -6714,9 +6717,9 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
    <tile gid="155"/>
    <tile gid="136"/>
    <tile gid="0"/>
@@ -6834,9 +6837,9 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
    <tile gid="155"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -6955,8 +6958,8 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
    <tile gid="155"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -7075,8 +7078,8 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="155"/>
+   <tile gid="155"/>
    <tile gid="155"/>
    <tile gid="136"/>
    <tile gid="0"/>
@@ -7702,6 +7705,12 @@
    <properties>
     <property name="animation_data" value="assets/spritesheets/p1_anims.json"/>
     <property name="components" value="Player();Collider();CharacterController();StaticBoundingRectangle(width=52, height=90)"/>
+   </properties>
+  </object>
+  <object id="22" gid="169" x="6050.5" y="1002.33" width="72" height="36">
+   <properties>
+    <property name="animation_data" value="assets/spritesheets/fly_anims.json"/>
+    <property name="components" value="SpriteBoundingRectangle();CharacterController(gravity=0);Collider()"/>
    </properties>
   </object>
  </objectgroup>

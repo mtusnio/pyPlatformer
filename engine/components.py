@@ -100,7 +100,7 @@ class SpriteRenderer(Renderable):
         self.vertical_flip = vertical_flip
 
         self.animation_set_name = None
-        self.animations = None
+        self.animations = {}
 
         self.playing_animation = None
         self.frame_index = None
@@ -155,18 +155,24 @@ class SpriteRenderer(Renderable):
             except IndexError as e:
                 logging.warning("Could not get animation data index")
                 self.animation_set_name = None
-                self.animations = None
+                self.animations = {}
             except ValueError as e:
                 logging.warning("Faulty animation data: {error}".format(error=e.message))
                 self.animation_set_name = None
-                self.animations = None
+                self.animations = {}
 
-    def play_animation(self, animation_name, loop=False, speed_rate=1.0):
+    def play_animation(self, animation_name, loop=False, speed_rate=1.0, restart=False):
         """
         Plays a selected animation from the parsed set
 
         :param str animation_name: Name of the animation to play
+        :param loop: Loops animation if true
+        :param speed_rate: Playback speed of the animation
+        :param restart: If true will restart the animation if it's already playing
         """
+        if not restart and self.playing_animation_name == animation_name:
+            return
+
         if animation_name in self.animations:
             self.playing_animation = self.animations[animation_name]
             self.frame_index = 0

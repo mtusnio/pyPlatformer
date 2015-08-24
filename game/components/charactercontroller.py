@@ -86,9 +86,9 @@ class CharacterController(BaseComponent):
 
         if not self.flying:
             if self.velocity.x != 0:
-                if not self.flying and sprite_renderer.playing_animation_name != "walk":
+                if not self.flying:
                     sprite_renderer.play_animation("walk", True)
-            elif sprite_renderer.playing_animation_name != "stand":
+            else:
                 sprite_renderer.play_animation("stand", True)
         else:
             sprite_renderer.play_animation("jump", True)

@@ -6,6 +6,7 @@ class GameObject(object):
         self.components = set()
         self.scene = None
         self.id = None
+        self.name = None
 
         self.add_components(*components)
 

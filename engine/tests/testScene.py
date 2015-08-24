@@ -71,6 +71,33 @@ class TestSceneObjects(unittest.TestCase):
         self.assertNotEqual(component_list[::-1],
                             scene.get_objects_of_type(components.Camera))
 
+    def test_return_named_object(self):
+        scene = Scene(None)
+        game_objects = [GameObject() for x in range(0, 10)]
+        for index,obj in enumerate(game_objects):
+            obj.name = str(index)
+            scene.add_object(obj)
+
+        self.assertIs(game_objects[2], scene.get_object_by_name("2"))
+
+    def test_return_named_objects(self):
+        scene = Scene(None)
+        game_objects = [GameObject() for x in range(0, 10)]
+        for index,obj in enumerate(game_objects):
+            obj.name = str(index % 2)
+            scene.add_object(obj)
+
+        self.assertEqual([x for x in game_objects if int(x.name) % 2 == 0], scene.get_objects_by_name("0"))
+
+    def test_return_nameless(self):
+        scene = Scene(None)
+        game_objects = [GameObject() for x in range(0, 10)]
+        for index,obj in enumerate(game_objects):
+            obj.name = None if index % 2 == 0 else "name"
+            scene.add_object(obj)
+
+        self.assertEqual([x for x in game_objects if x.name is None], scene.get_objects_by_name(None))
+
     def test_find_no_objects_of_type(self):
         scene = Scene(None)
         obj = GameObject(components.Camera())

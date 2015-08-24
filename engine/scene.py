@@ -95,6 +95,27 @@ class Scene(object):
                 ret.append(component)
         return ret
 
+    def get_object_by_name(self, name):
+        """
+        Returns first found object with the specified name
+        :param name: String name of the object, if None it will return first nameless object
+        :return: Game object
+        """
+        objs = self.get_objects_by_name(name)
+        return None if len(objs) == 0 else objs[0]
+
+    def get_objects_by_name(self, name):
+        """
+        Returns all objects with the given name
+        :param None name: String name of the objects, None will return all nameless objects
+        :return: List of game objects
+        """
+        ret = []
+        for key,obj in self.objects.items():
+            if obj.name == name:
+                ret.append(obj)
+        return ret
+
     def _check_collisions(self):
         checked = set()
         for obj1 in list(self.objects.values()):

@@ -8,9 +8,10 @@ from engine.math.functions import sign
 class CharacterController(BaseComponent):
     DEFAULT_GRAVITY = 825
 
-    def __init__(self, gravity=DEFAULT_GRAVITY):
+    def __init__(self, gravity=DEFAULT_GRAVITY, flying_character=False):
         super(CharacterController, self).__init__()
         self.flying = True
+        self.flying_character = flying_character
         self.velocity = Vector2(0, 0)
         self.applied_velocity = Vector2(0, 0)
         self.gravity = gravity
@@ -58,8 +59,9 @@ class CharacterController(BaseComponent):
                 else:
                     tile = min(tiles, key=lambda t: t.y)
                     position.y = tiled_map.get_rectangle_for_tile(tile).top - bounding_rectangle.height/2 - epsilon
-                    self.flying = False
                     self.velocity.y = 0
+                    if not self.flying_character:
+                        self.flying = False
                 dt_velocity.y = self.velocity.y * dt
 
         if self.velocity.x != 0:

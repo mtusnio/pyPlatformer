@@ -7701,7 +7701,7 @@
   <object id="12" name="player1" gid="157" x="2310" y="1820" width="54" height="73">
    <properties>
     <property name="animation_data" value="assets/spritesheets/p1_anims.json"/>
-    <property name="components" value="Player;Collider;CharacterController"/>
+    <property name="components" value="Player();Collider();CharacterController();StaticBoundingRectangle(width=52, height=90)"/>
    </properties>
   </object>
  </objectgroup>

@@ -15,9 +15,6 @@ class CharacterController(BaseComponent):
         self.applied_velocity = Vector2(0, 0)
         self.gravity = gravity
 
-    def on_add(self):
-        self.game_object.add_components(StaticBoundingRectangle(52, 90))
-
     def update(self):
         tiled_map = self.game_object.scene.get_object_of_type(TiledMap)
 

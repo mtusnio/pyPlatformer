@@ -7,7 +7,7 @@ import logging
 import sys
 import ast
 import json
-import os
+import re
 
 
 class BaseComponent(object):
@@ -452,7 +452,21 @@ class TiledMap(Renderable):
 
     def _resolve_components(self, components, game_object):
         import game.components as game_components
-        for component_name in components:
+        for component_declaration in components:
+            # TODO: Replace with regex
+            component_name = component_declaration.split("(")[0]
+            parameters = component_declaration.split("(")[1][:-1]
+
+            try:
+                regex_results = re.findall("([a-zA-Z0-9]+)=([a-zA-Z0-9]+)", parameters)
+                parameters = {}
+                for param in regex_results:
+                    parameters[param[0]] = ast.literal_eval(param[1])
+
+            except ( SyntaxError, ValueError ) as e:
+                logging.warning("Could not parse parameters for {component}".format(component=component_name))
+                continue
+
             component_class = None
             module = sys.modules[__name__]
             if hasattr(module, component_name):
@@ -461,7 +475,7 @@ class TiledMap(Renderable):
                 component_class = getattr(game_components, component_name)
 
             if component_class is not None:
-                game_object.add_components(component_class())
+                game_object.add_components(component_class(**parameters))
             else:
                 logging.warning("Could not find class: '{0}'".format(component_name))
 

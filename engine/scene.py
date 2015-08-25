@@ -79,6 +79,9 @@ class Scene(object):
         self._check_collisions()
 
         for obj in list(self.objects.values()):
+            if not obj.started:
+                obj.start()
+
             obj.update()
 
     def simulate_postframe(self):

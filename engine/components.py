@@ -25,6 +25,12 @@ class BaseComponent(object):
         """
         pass
 
+    def start(self):
+        """
+        Called right before the component's first update is run (and thus all objects in this frame have been spawned)
+        """
+        pass
+
     def on_add(self):
         """
         Runs immediately after the component was added to a game object

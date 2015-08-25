@@ -7,6 +7,7 @@ class GameObject(object):
         self.scene = None
         self.id = None
         self.name = None
+        self.started = False
 
         self.add_components(*components)
 
@@ -70,6 +71,14 @@ class GameObject(object):
         """
         for cmp in self.components:
             cmp.spawn()
+
+    def start(self):
+        """
+        Called right before the object's first update
+        """
+        for cmp in self.components:
+            cmp.start()
+        self.started = True
 
     def update(self):
         """

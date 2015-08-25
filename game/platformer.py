@@ -26,5 +26,3 @@ class Platformer(Application):
         Input.bindings["left"] = pygame.K_a
         Input.bindings["right"] = pygame.K_d
         Input.bindings["jump"] = pygame.K_SPACE
-
-        map_obj.get_component(engine.components.TiledMap).fill_scene_with_objects()

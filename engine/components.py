@@ -19,6 +19,12 @@ class BaseComponent(object):
     def __init__(self):
         self.game_object = None
 
+    def spawn(self):
+        """
+        Called at the start of the frame after component's object was initialized in the scene
+        """
+        pass
+
     def on_add(self):
         """
         Runs immediately after the component was added to a game object
@@ -310,6 +316,9 @@ class TiledMap(Renderable):
     def __init__(self, map_path=None):
         super(TiledMap, self).__init__()
         self.map = tiledmap.load(map_path) if map_path is not None else None
+
+    def spawn(self):
+        self.fill_scene_with_objects()
 
     def is_position_in_map(self, position):
         """

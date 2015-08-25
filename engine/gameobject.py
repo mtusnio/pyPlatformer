@@ -64,6 +64,13 @@ class GameObject(object):
         """
         return len(self.get_components(cls)) > 0
 
+    def spawn(self):
+        """
+        Called immediately after an object was created in the scene
+        """
+        for cmp in self.components:
+            cmp.spawn()
+
     def update(self):
         """
         Runs object simulation before rendering

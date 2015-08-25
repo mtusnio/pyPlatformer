@@ -21,7 +21,7 @@ class BaseComponent(object):
 
     def on_add(self):
         """
-        Runs once when the component is added to a game object
+        Runs immediately after the component was added to a game object
         """
         pass
 

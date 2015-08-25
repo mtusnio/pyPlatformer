@@ -54,8 +54,6 @@ class Scene(object):
     def simulate_preframe(self):
         """
         Renders a frame before rendering is done
-
-        :param float dt: Frametime
         """
         self._check_collisions()
 
@@ -65,8 +63,6 @@ class Scene(object):
     def simulate_postframe(self):
         """
         Renders a frame after rendering is done
-
-        :param float dt: Frametime
         """
         for obj in list(self.objects.values()):
             obj.update_postframe()

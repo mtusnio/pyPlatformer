@@ -11,6 +11,12 @@ class GameObject(object):
 
         self.add_components(*components)
 
+    def __eq__(self, other):
+        return self is other
+
+    def __hash__(self):
+        return hash(self.id) * hash(self.name)
+
     def add_components(self, *components):
         """
         :param component: Component list to add

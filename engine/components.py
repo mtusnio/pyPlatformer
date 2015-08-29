@@ -440,6 +440,7 @@ class TiledMap(Renderable):
 
                 obj_position = Vector2(obj.x, obj.y) + translation
                 game_object.add_components(Transform(position=obj_position))
+                game_object.name = obj.name
                 if obj.image is not None:
                     animation_data = obj.properties.get("animation_data", None)
                     game_object.add_components(SpriteRenderer(image=obj.image, animation_data=animation_data))

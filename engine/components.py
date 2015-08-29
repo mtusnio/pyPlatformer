@@ -444,7 +444,8 @@ class TiledMap(Renderable):
                     animation_data = obj.properties.get("animation_data", None)
                     game_object.add_components(SpriteRenderer(image=obj.image, animation_data=animation_data))
 
-                self._resolve_components(obj.properties.get("components", "").split(";"), game_object)
+                if "components" in obj.properties:
+                    self._resolve_components(obj.properties["components"].split(";"), game_object)
 
                 scene.add_object(game_object)
 
@@ -476,16 +477,19 @@ class TiledMap(Renderable):
         for component_declaration in components:
             # TODO: Replace with regex
             component_name = component_declaration.split("(")[0]
-            parameters = component_declaration.split("(")[1][:-1]
+            try:
+                parameters = component_declaration.split("(")[1][:-1]
+            except IndexError:
+                logging.warning("Faulty component data: " + component_name)
+                continue
 
             try:
-                regex_results = re.findall("([a-zA-Z0-9]+)=([a-zA-Z0-9]+)", parameters)
-                parameters = {}
-                for param in regex_results:
-                    parameters[param[0]] = ast.literal_eval(param[1])
+                dict_string = "{" + re.sub(r"(?:(^|,)( )*)([a-z]+)", "\\1\"\\3\"", parameters) + "}"
+                parameters = ast.literal_eval(dict_string)
 
             except ( SyntaxError, ValueError ) as e:
-                logging.warning("Could not parse parameters for {component}".format(component=component_name))
+                logging.warning("Could not parse parameters for {component} due to {error}"
+                                .format(component=component_name, error=str(e)))
                 continue
 
             component_class = None

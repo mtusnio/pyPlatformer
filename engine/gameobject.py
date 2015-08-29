@@ -1,9 +1,8 @@
 from .components import Transform
 
-
 class GameObject(object):
     def __init__(self, *components):
-        self.components = set()
+        self.components = []
         self.scene = None
         self.id = None
         self.name = None
@@ -21,7 +20,7 @@ class GameObject(object):
         """
         :param component: Component list to add
         """
-        self.components = self.components.union(set(components))
+        self.components.extend([ x for x in components if x not in self.components])
         for component in components:
             component.game_object = self
 
@@ -32,8 +31,9 @@ class GameObject(object):
         """
         :param components: List of components to remove
         """
-        self.components = self.components.difference(set(components))
-        for component in components:
+        removed = [x for x in components if x in self.components]
+        self.components = [x for x in self.components if x not in components]
+        for component in removed:
             component.game_object = None
 
     def get_components(self, cls=None):

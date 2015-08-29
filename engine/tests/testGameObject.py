@@ -13,15 +13,15 @@ class TestGameObjectComponents(unittest.TestCase):
     def test_create_object_with_components(self):
         obj = GameObject(*self.testComponents)
 
-        self.assertSetEqual(set(self.testComponents), obj.components)
+        self.assertListEqual(self.testComponents, obj.components)
 
     def test_add_components(self):
         import itertools
         obj = self._get_obj_with_components()
 
         self.assertEqual(len(obj.components), len(self.testComponents))
-        self.assertSetEqual(set(self.testComponents), obj.components)
-        self.assertSetEqual(set(obj.components), set([x for x in obj.components if x.game_object == obj]))
+        self.assertListEqual(self.testComponents, obj.components)
+        self.assertListEqual(obj.components, [x for x in obj.components if x.game_object == obj])
 
     def test_add_no_component(self):
         obj = GameObject()
@@ -36,7 +36,7 @@ class TestGameObjectComponents(unittest.TestCase):
         obj.add_components(*newList)
 
         self.assertEqual(len(obj.components), len(newList))
-        self.assertEqual(set(newList), obj.components)
+        self.assertListEqual(newList, obj.components)
 
     def test_remove_one_component(self):
         self._test_remove_components(self._get_obj_with_components(), 1)
@@ -59,6 +59,16 @@ class TestGameObjectComponents(unittest.TestCase):
 
         self.assertSetEqual(set(test_components), set(obj.get_components()))
 
+    def test_returns_components_in_the_right_order(self):
+        components = [ engine.components.SpriteRenderer(), engine.components.Transform(),
+                       engine.components.BoundingRectangle(), engine.components.SpriteRenderer()]
+
+        obj = GameObject()
+        obj.add_components(*components)
+
+        for i, cmp in enumerate(obj.get_components(engine.components.BaseComponent)):
+            self.assertIs(components[i], cmp)
+
     def test_has_component(self):
         obj = GameObject()
         self.assertFalse(obj.has_component(engine.components.BaseComponent))
@@ -74,7 +84,7 @@ class TestGameObjectComponents(unittest.TestCase):
         obj.remove_components(*components)
 
         self.assertEqual(len(obj.components), length - count)
-        self.assertSetEqual(obj.components & set(components), set())
+        self.assertSetEqual(set(obj.components) & set(components), set())
         self.assertEqual(len(components), len(list(filter(lambda x: x.game_object is None, components))))
 
     def _get_obj_with_components(self):

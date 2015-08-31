@@ -1,0 +1,13 @@
+{
+  "name": "fly_animations",
+  "jump": {
+    "speed": 0.3,
+    "frames": [
+        "2 2 72 36",
+        "137 2 75 31"
+      ]
+  },
+  "die": {
+    "frames": [ "76 2 59 33" ]
+   }
+}

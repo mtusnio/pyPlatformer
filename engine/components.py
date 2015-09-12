@@ -49,6 +49,20 @@ class BaseComponent(object):
         """
         pass
 
+    def start_collision(self, obj):
+        """
+        Runs once at the start of collision
+        :param GameObject obj: Object we collided with
+        """
+        pass
+
+    def end_collision(self, obj):
+        """
+        Runs once after the objects stopped colliding
+        :param GameObject obj: Object we have finished colliding with
+        """
+        pass
+
     # Shortcuts so that we don't have to go through game_object every time
     @property
     def scene(self):
@@ -64,7 +78,7 @@ class BaseComponent(object):
         """
         return self.game_object.get_component(cls)
 
-    def get_components(self, cls):
+    def get_components(self, cls=None):
         """
         Same as game_object.get_components
         """
@@ -303,14 +317,8 @@ class Collider(BaseComponent):
     def __init__(self):
         super(Collider, self).__init__()
 
-    def get_collision_shapes(self, game_object):
-        """
-        Returns a list of rectangles to use for collision detection.
-
-        :param engine.GameObject game_object: Object we are testing collisions against
-        :return pygame.Rect:
-        """
-        return [self.game_object.get_component(BoundingRectangle).rectangle]
+    def get_collision_shape(self):
+        return self.get_component(BoundingRectangle).rectangle
 
 
 class TiledMap(Renderable):

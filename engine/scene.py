@@ -26,6 +26,7 @@ class Scene(object):
         self.objects_spawn_queue = []
 
         self._maxIndex = 0
+        self._current_collisions = set()
 
     def add_object(self, obj):
         """
@@ -153,6 +154,17 @@ class Scene(object):
 
     def _check_collisions(self):
         checked = set()
+        current_collisions = set()
+        for pair in self._current_collisions:
+            checked.add((pair[0].game_object, pair[1].game_object))
+            checked.add((pair[1].game_object, pair[0].game_object))
+            if self._run_collision_check(pair[0], pair[1]):
+                current_collisions.add(pair)
+            else:
+                self._run_collision_for_pair(pair[0], pair[1], True)
+
+        self._current_collisions = current_collisions
+
         for obj1 in list(self.objects.values()):
             collider1 = obj1.get_component(Collider)
             if collider1 is not None:
@@ -162,31 +174,26 @@ class Scene(object):
                         if collider2 is not None:
                             checked.add((obj1, obj2))
                             checked.add((obj2, obj1))
-                            self._run_collision_check(collider1, collider2)
+                            if self._run_collision_check(collider1, collider2):
+                                self._run_collision_for_pair(collider1, collider2)
+                                self._current_collisions.add((collider1, collider2))
+
+    def _run_collision_for_pair(self, collider1, collider2, end=False):
+        for cmp in collider1.get_components():
+            if end:
+                cmp.end_collision(collider2.game_object)
+            else:
+                cmp.start_collision(collider2.game_object)
+
+        for cmp in collider2.get_components():
+            if end:
+                cmp.end_collision(collider1.game_object)
+            else:
+                cmp.start_collision(collider1.game_object)
 
     def _run_collision_check(self, collider1, collider2):
-        first_rects = collider1.get_collision_shapes(collider2.game_object)
-        second_rects = collider2.get_collision_shapes(collider1.game_object)
+        return collider1.get_collision_shape().colliderect(collider2.get_collision_shape())
 
-        first_collision_data = []
-        second_collision_data = []
 
-        found_indices = set()
-        for rectangle in first_rects:
-            indices = rectangle.collidelistall(second_rects)
-            if len(indices) > 0:
-                found_rectangles = [second_rects[i] for i in indices if i not in found_indices]
-                first_collision_data.extend(found_rectangles)
-                second_collision_data.append(rectangle)
 
-        assert (len(first_collision_data) > 0 and len(second_collision_data) > 0) \
-               or (len(first_collision_data) == 0 and len(second_collision_data) == 0)
 
-        if len(first_collision_data) > 0 and len(second_collision_data) > 0:
-            for component in collider1.game_object.get_components():
-                if hasattr(component, "collide"):
-                    component.collide(collider2.game_object, *first_collision_data)
-
-            for component in collider2.game_object.get_components():
-                if hasattr(component, "collide"):
-                    component.collide(collider1.game_object, *second_collision_data)

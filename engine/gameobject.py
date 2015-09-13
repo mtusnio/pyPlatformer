@@ -1,5 +1,6 @@
 from .components import Transform
 
+
 class GameObject(object):
     def __init__(self, *components):
         self.components = []
@@ -15,6 +16,13 @@ class GameObject(object):
 
     def __hash__(self):
         return hash(self.id) * hash(self.name)
+
+    def destroy(self):
+        for cmp in self.components:
+            cmp.destroy()
+        if self.scene is not None:
+            self.scene.remove_object(self)
+        cmp = []
 
     def add_components(self, *components):
         """

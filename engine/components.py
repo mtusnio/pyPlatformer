@@ -31,6 +31,12 @@ class BaseComponent(object):
         """
         pass
 
+    def destroy(self):
+        """
+        Called when destroy is called on an object
+        """
+        pass
+
     def on_add(self):
         """
         Runs immediately after the component was added to a game object

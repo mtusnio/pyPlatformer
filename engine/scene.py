@@ -16,12 +16,14 @@ class Scene(object):
     :type objects: dict[int, GameObject]
     :type camera: GameObject
     :type dt: float
+    :type time: float
     :type game: Application
     """
     def __init__(self, game):
         self.objects = collections.OrderedDict()
         self.camera = None
         self.dt = 0
+        self.time = 0
         self.game = game
         self.objects_spawn_queue = []
 
@@ -71,6 +73,7 @@ class Scene(object):
         :param float dt: Time (in seconds) passed since the previous frame
         """
         self.dt = dt
+        self.time += dt
         self._add_awaiting_objects()
 
     def simulate_preframe(self):

@@ -17,6 +17,9 @@ class Player(Character):
     HORIZONTAL_PUSH = 1000
     VERTICAL_PUSH = -600
 
+    def __init__(self, health=3):
+        super(Player, self).__init__(health)
+
     def update(self):
         player = self.game_object
         camera = player.scene.camera

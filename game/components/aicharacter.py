@@ -1,13 +1,14 @@
 __author__ = 'Maverick'
 from engine.components import BaseComponent
-from game.components import CharacterController
-from engine.math.functions import clamp
+from game.components import CharacterController, Character
+from engine.math.functions import clamp, sign
 
-class AICharacter(BaseComponent):
+
+class AICharacter(Character):
     MOVEMENT_SPEED = 600
 
-    def __init__(self, path=None, loop=False, movement_speed=MOVEMENT_SPEED):
-        super(AICharacter, self).__init__()
+    def __init__(self, health=1, path=None, loop=False, movement_speed=MOVEMENT_SPEED, damages=True):
+        super(AICharacter, self).__init__(health)
         if path is None:
             path = []
         self._path_nodes_names = path
@@ -16,6 +17,7 @@ class AICharacter(BaseComponent):
         self.current_path_index = 0
         self.stopped = False
         self.movement_speed = movement_speed
+        self.damages = damages
 
     def start(self):
         for node_name in self._path_nodes_names:

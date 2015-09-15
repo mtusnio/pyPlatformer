@@ -3,17 +3,19 @@ from engine import Input
 from engine.components import BaseComponent
 from engine.input import BindingDoesNotExist
 from engine.math.functions import sign, clamp
-from game.components import CharacterController
+from game.components import CharacterController, Character, AICharacter
 import logging
 
 
-class Player(BaseComponent):
+class Player(Character):
 
     MOVEMENT_PER_SECOND = 1700
     JUMP_SPEED = 700
 
-    MAX_VERTICAL_SPEED = 1200
     MAX_HORIZONTAL_SPEED = 500
+
+    HORIZONTAL_PUSH = 1000
+    VERTICAL_PUSH = -600
 
     def update(self):
         player = self.game_object
@@ -22,17 +24,27 @@ class Player(BaseComponent):
 
         self._handle_input()
 
+    def start_collision(self, obj):
+        dir = self.transform.position - obj.transform.position
+        dir.normalize()
+        if obj.get_component(AICharacter) is not None:
+            controller = self.get_component(CharacterController)
+            controller.velocity.x = sign(dir.x) * self.HORIZONTAL_PUSH
+            controller.velocity.y = self.VERTICAL_PUSH
+
     def _handle_input(self):
         dt = self.game_object.scene.dt
         controller = self.game_object.get_component(CharacterController)
         try:
             binding_pressed = False
-            if Input.is_binding_pressed("left"):
-                binding_pressed = True
-                controller.velocity.x -= self.MOVEMENT_PER_SECOND * dt
-            if Input.is_binding_pressed("right"):
-                binding_pressed = True
-                controller.velocity.x += self.MOVEMENT_PER_SECOND * dt
+            if abs(controller.velocity.x) < self.MAX_HORIZONTAL_SPEED:
+                if Input.is_binding_pressed("left"):
+                    binding_pressed = True
+                    controller.velocity.x -= self.MOVEMENT_PER_SECOND * dt
+                if Input.is_binding_pressed("right"):
+                    binding_pressed = True
+                    controller.velocity.x += self.MOVEMENT_PER_SECOND * dt
+                controller.velocity.x = clamp(controller.velocity.x, -self.MAX_HORIZONTAL_SPEED, self.MAX_HORIZONTAL_SPEED)
 
             if not binding_pressed:
                 sigma = sign(controller.velocity.x)
@@ -46,7 +58,4 @@ class Player(BaseComponent):
         except BindingDoesNotExist as e:
             logging.warning("Binding not found: " + str(e))
 
-        # Velocity clamping
-        controller.velocity.x = clamp(controller.velocity.x, -self.MAX_HORIZONTAL_SPEED, self.MAX_HORIZONTAL_SPEED)
-        controller.velocity.y = clamp(controller.velocity.y, -self.MAX_VERTICAL_SPEED, self.MAX_VERTICAL_SPEED)
 

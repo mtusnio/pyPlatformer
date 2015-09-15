@@ -1,6 +1,6 @@
 __author__ = 'Maverick'
 
-from engine.components import BaseComponent, BoundingRectangle, StaticBoundingRectangle, TiledMap, SpriteRenderer
+from engine.components import BaseComponent, BoundingRectangle, TiledMap, SpriteRenderer
 from engine.math import Vector2
 from engine.math.functions import sign
 
@@ -34,6 +34,9 @@ class CharacterController(BaseComponent):
         bounding_rectangle = self.game_object.get_component(BoundingRectangle).rectangle
         sprite_renderer = self.game_object.get_component(SpriteRenderer)
         if not self.flying:
+            if self.velocity.y > epsilon:
+                self.flying = True
+
             test_rectangle = bounding_rectangle.move(Vector2(0, 3))
             map_tiles = tiled_map.get_tiles_for_area(test_rectangle, collidable=True)
             if len(map_tiles) == 0:

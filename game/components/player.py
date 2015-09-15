@@ -17,6 +17,8 @@ class Player(Character):
     HORIZONTAL_PUSH = 1000
     VERTICAL_PUSH = -600
 
+    INVULNERABILITY_TIMER = 1.5
+
     def __init__(self, health=3):
         super(Player, self).__init__(health)
 
@@ -27,13 +29,18 @@ class Player(Character):
 
         self._handle_input()
 
+    def kill(self):
+        super(Player, self).kill()
+
     def start_collision(self, obj):
-        dir = self.transform.position - obj.transform.position
-        dir.normalize()
-        if obj.get_component(AICharacter) is not None:
-            controller = self.get_component(CharacterController)
-            controller.velocity.x = sign(dir.x) * self.HORIZONTAL_PUSH
-            controller.velocity.y = self.VERTICAL_PUSH
+        if self.scene.time - self.last_hurt > self.INVULNERABILITY_TIMER:
+            dir = self.transform.position - obj.transform.position
+            dir.normalize()
+            if obj.get_component(AICharacter) is not None:
+                controller = self.get_component(CharacterController)
+                controller.velocity.x = sign(dir.x) * self.HORIZONTAL_PUSH
+                controller.velocity.y = self.VERTICAL_PUSH
+                self.damage(1)
 
     def _handle_input(self):
         dt = self.game_object.scene.dt

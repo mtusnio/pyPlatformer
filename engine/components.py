@@ -110,6 +110,34 @@ class Renderable(BaseComponent):
 
 
 class SpriteRenderer(Renderable):
+    class Effect(object):
+        """
+        :type finished: bool
+        :type sprite_renderer: SpriteRenderer
+        """
+
+        def __init__(self):
+            self.finished = False
+            self.sprite_renderer = None
+
+        def on_start(self):
+            """
+            Called when effect is added to the SpriteRenderer
+            """
+            pass
+
+        def run(self):
+            """
+            Runs once per frame
+            """
+            pass
+
+        def on_stop(self):
+            """
+            Called when the effect is explicitly stopped
+            """
+            pass
+
     """
     :type image: pygame.Surface
     :type horizontal_flip: bool
@@ -143,6 +171,9 @@ class SpriteRenderer(Renderable):
         self.parse_animations(animation_data)
         if default_animation is not None:
             self.play_animation(default_animation)
+
+        self.effects = {}
+        self._effects_max_id = 0
 
     @property
     def playing_animation_name(self):
@@ -223,7 +254,56 @@ class SpriteRenderer(Renderable):
         self.frame_index = 0
         self.frame_time = 0
 
+    def start_effect(self, effect):
+        """
+        Starts provided effect object.
+
+        :param SpriteRenderer.Effect effect: Effect object to be started
+        :return: Id of the registered effect
+        """
+        self.effects[self._effects_max_id] = effect
+        id = self._effects_max_id
+        self._effects_max_id += 1
+        effect.sprite_renderer = self
+        effect.on_start()
+        return id
+
+    def stop_effect(self, effect):
+        """
+        Stops provided effect object or id
+
+        :param int, SpriteRenderer.Effect effect: Effect object or its id
+        :return: True if found and stopped, False if not found
+        """
+        effect_id = -1
+        if isinstance(effect, int):
+            effect_id = effect
+
+            if effect_id not in self.effects:
+                return False
+        else:
+            for eId, e in self.effects:
+                if e is effect:
+                    effect_id = eId
+                    break
+            else:
+                return False
+
+        effect = self.effects[effect_id]
+        effect.on_stop()
+        effect.sprite_renderer = None
+        return True
+
     def update(self):
+        current_effects = {}
+        for id, effect in self.effects.items():
+            effect.run()
+            if not effect.finished:
+                current_effects[id] = effect
+            else:
+                effect.sprite_renderer = None
+        self.effects = current_effects
+
         if self.playing_animation is not None:
             animation = self.playing_animation
             self.frame_time += self.game_object.scene.dt

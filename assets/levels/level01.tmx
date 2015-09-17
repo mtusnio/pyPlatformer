@@ -7707,16 +7707,16 @@
     <property name="components" value="Player();Collider();CharacterController();StaticBoundingRectangle(width: 52, height: 90)"/>
    </properties>
   </object>
-  <object id="22" name="fly" gid="169" x="6019.83" y="1010" width="72" height="36">
+  <object id="22" name="fly" gid="169" x="6019.83" y="1080" width="72" height="36">
    <properties>
     <property name="animation_data" value="assets/spritesheets/fly_anims.json"/>
     <property name="components" value="SpriteBoundingRectangle();CharacterController(gravity: 0);Collider();AICharacter(path: [&quot;fly_waypoint_1&quot;, &quot;fly_waypoint_2&quot;], loop: True)"/>
    </properties>
   </object>
-  <object id="24" name="fly_waypoint_2" x="6019.77" y="980.028" width="2" height="2">
+  <object id="24" name="fly_waypoint_2" x="6019.77" y="1050.03" width="2" height="2">
    <ellipse/>
   </object>
-  <object id="27" name="fly_waypoint_1" x="4970" y="980" width="2" height="2">
+  <object id="27" name="fly_waypoint_1" x="4970" y="1050" width="2" height="2">
    <ellipse/>
   </object>
  </objectgroup>

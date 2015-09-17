@@ -41,8 +41,8 @@ class Player(Character):
                 controller = self.get_component(CharacterController)
                 controller.velocity.x = sign(dir.x) * self.HORIZONTAL_PUSH
                 controller.velocity.y = self.VERTICAL_PUSH
-                self.damage(1)
                 self.get_component(SpriteRenderer).start_effect(BlinkEffect(self.INVULNERABILITY_TIMER))
+                self.damage(1)
 
     def _handle_input(self):
         dt = self.game_object.scene.dt

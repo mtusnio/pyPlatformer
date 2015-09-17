@@ -47,6 +47,3 @@ class AICharacter(Character):
                 else:
                     self.current_path_index = len(self.path) - 1
                     self.stopped = True
-
-
-

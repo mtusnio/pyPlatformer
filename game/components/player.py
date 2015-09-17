@@ -1,9 +1,10 @@
 __author__ = 'Maverick'
 from engine import Input
-from engine.components import BaseComponent
+from engine.components import SpriteRenderer
 from engine.input import BindingDoesNotExist
 from engine.math.functions import sign, clamp
 from game.components import CharacterController, Character, AICharacter
+from game.spriteeffects import BlinkEffect
 import logging
 
 
@@ -41,6 +42,7 @@ class Player(Character):
                 controller.velocity.x = sign(dir.x) * self.HORIZONTAL_PUSH
                 controller.velocity.y = self.VERTICAL_PUSH
                 self.damage(1)
+                self.get_component(SpriteRenderer).start_effect(BlinkEffect(self.INVULNERABILITY_TIMER))
 
     def _handle_input(self):
         dt = self.game_object.scene.dt

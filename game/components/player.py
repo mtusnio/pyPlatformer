@@ -11,7 +11,7 @@ import logging
 class Player(Character):
 
     MOVEMENT_PER_SECOND = 1700
-    JUMP_SPEED = 700
+    JUMP_SPEED = 600
 
     MAX_HORIZONTAL_SPEED = 500
 

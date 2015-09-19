@@ -428,13 +428,13 @@ class TiledMap(Renderable):
         :return: True if position is within map's bounds, False otherwise
         """
         relative_pos = position - self.game_object.transform.position
-        if position[0] < 0 or position[1] < 0:
+        if relative_pos[0] < 0 or relative_pos[1] < 0:
             return False
 
-        if position[0] > self.map.tilewidth * self.map.width:
+        if relative_pos[0] > self.map.tilewidth * self.map.width:
             return False
 
-        if position[1] > self.map.tileheight * self.map.height:
+        if relative_pos[1] > self.map.tileheight * self.map.height:
             return False
 
         return True

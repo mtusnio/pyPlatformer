@@ -5,6 +5,9 @@ import struct
 
 
 class Renderer(object):
+    """
+    :type screen: pygame.Surface
+    """
     def __init__(self, screen):
         self.screen = screen
 

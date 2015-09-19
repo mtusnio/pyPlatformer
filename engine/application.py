@@ -14,8 +14,11 @@ class MissingSceneError(Exception):
 
 
 class Application(object):
+    """
+    :type renderer: engine.renderer.Renderer
+    :type scene: engine.scene.Scene
+    """
     def __init__(self):
-        self.bindings = None
         self.scene = None
         self.renderer = None
 

@@ -44,6 +44,11 @@ class Player(Character):
                 self.get_component(SpriteRenderer).start_effect(BlinkEffect(self.INVULNERABILITY_TIMER))
                 self.damage(1)
 
+    def damage(self, amount):
+        scene = self.scene
+        super(Player, self).damage(amount)
+        scene.interface.process_event({"name": "player_damaged", "lives": self.health})
+
     def _handle_input(self):
         dt = self.game_object.scene.dt
         controller = self.game_object.get_component(CharacterController)

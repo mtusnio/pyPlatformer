@@ -14,7 +14,7 @@ class UIElement(object):
     :type position: engine.math.Vector2
     :type width: int
     :type height: int
-    :type event_listener: set
+    :type event_listeners: dict
     """
     def __init__(self, name, position=None, width=0, height=0):
         self.name = name
@@ -26,7 +26,8 @@ class UIElement(object):
         self.position = position
         self.width = width
         self.height = height
-        self.event_listener = set()
+
+        self.event_listeners = {}
 
     def add_child(self, element):
         """
@@ -83,10 +84,19 @@ class UIElement(object):
         return parent
 
     def process_event(self, event):
-        pass
+        name = event["name"]
+        if name in self.event_listeners:
+            self.event_listeners[name](self, event)
 
-    def listen_for_event(self, event_name):
-        self.event_listener.add(event_name)
+    def listen_for_event(self, event_name, callback):
+        if callback is None:
+            raise ValueError("Event callback cannot be None")
+
+        self.event_listeners[event_name] = callback
+
+    def stop_listening_for_event(self, event_name):
+        if event_name in self.event_listeners:
+            del self.event_listeners[event_name]
 
     def update(self):
         pass
@@ -129,7 +139,7 @@ class Canvas(UIElement):
 
     def process_event(self, event):
         for child in self.get_children():
-            if event["name"] in child.event_listener:
+            if event["name"] in child.event_listeners:
                 child.process_event(event)
 
 
@@ -207,6 +217,10 @@ class SpriteGroup(SpriteElement):
             self.sprite.blit(pygame.transform.scale(info[0], (info[1], info[2])), (x, y))
 
     def _construct_sprite(self):
+        if self.visible_count == 0:
+            self.sprite = pygame.Surface((0, 0), pygame.SRCALPHA, 32)
+            return
+
         visible = self._images[:self.visible_count]
         spacing_size = max((len(visible) - 1) * self.spacing, 0)
         if self.horizontal:

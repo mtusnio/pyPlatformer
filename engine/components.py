@@ -13,7 +13,6 @@ import re
 class BaseComponent(object):
     """
     :type game_object: engine.GameObject
-    :type scene: engine.Scene
     :type transform: engine.components.Transform
     """
     def __init__(self):
@@ -72,10 +71,12 @@ class BaseComponent(object):
     # Shortcuts so that we don't have to go through game_object every time
     @property
     def scene(self):
+        ":rtype: engine.scene.Scene"
         return self.game_object.scene
 
     @property
     def transform(self):
+        ":rtype: engine.components.Transform"
         return self.game_object.transform
 
     def get_component(self, cls):

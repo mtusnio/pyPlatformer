@@ -1,7 +1,8 @@
 import pygame
 from . import components
 from engine.math import Vector2, Rect
-import struct
+from pygame import transform
+from .interface import SpriteElement
 
 
 class Renderer(object):
@@ -15,7 +16,7 @@ class Renderer(object):
         """
         Renders current state of scene
 
-        :param engine.scene.Scene scene: engine.scene.Scene
+        :param engine.scene.Scene scene: Scene to render
         """
         tiled_map = scene.get_object_of_type(components.TiledMap)
         if tiled_map is not None:
@@ -41,6 +42,9 @@ class Renderer(object):
                 if rend.should_render is True:
                     self._render(rend, camera_position)
 
+        if scene.interface is not None:
+            self._render_interface(scene.interface)
+
     def _render(self, renderable, camera_position):
         surface_rect = self.screen.get_rect(center=camera_position[0] + Vector2(self.screen.get_width()/2, self.screen.get_height()/2))
 
@@ -56,7 +60,7 @@ class Renderer(object):
 
         if isinstance(renderable, components.SpriteRenderer):
             if renderable.image is not None and \
-                surface_rect.colliderect(renderable.image.get_rect(center=obj_transform.position)):
+                    surface_rect.colliderect(renderable.image.get_rect(center=obj_transform.position)):
                 self._render_image(renderable.image, position, rotation, scale,
                                    renderable.vertical_flip, renderable.horizontal_flip)
         elif isinstance(renderable, components.TiledMap):
@@ -76,3 +80,18 @@ class Renderer(object):
             surface = pygame.transform.flip(surface, hor_flip, ver_flip)
 
         self.screen.blit(surface, surface.get_rect(center=position))
+
+    def _render_interface(self, interface):
+        """
+
+        :param engine.interface.Canvas interface: Interface to render
+        """
+        for element in interface.get_children():
+            if isinstance(element, SpriteElement):
+                sprite = element.sprite
+                if sprite is not None:
+                    try:
+                        surface = transform.smoothscale(sprite, (element.width, element.height))
+                    except ValueError:
+                        surface = transform.scale(sprite, (element.width, element.height))
+                    self.screen.blit(surface, surface.get_rect(x=element.position.x, y=element.position.y))

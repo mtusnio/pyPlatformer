@@ -1,9 +1,8 @@
 __author__ = 'Maverick'
 from engine import GameObject, Scene, Application, Input
 import engine.components
-from . import components
 import pygame
-from engine import tiledmap
+from engine.interface import Canvas, SpriteGroup
 
 
 class Platformer(Application):
@@ -22,7 +21,9 @@ class Platformer(Application):
         self.scene.camera = GameObject()
         self.scene.add_object(self.scene.camera)
         self.scene.camera.add_components(engine.components.Transform(), engine.components.Camera())
+        self.scene.interface = Canvas(self.scene)
 
+        self.scene.interface.add_child(SpriteGroup("life_indicator", [("assets/interface/heart.png", 32, 32)] * 4))
         Input.bindings["left"] = pygame.K_a
         Input.bindings["right"] = pygame.K_d
         Input.bindings["jump"] = pygame.K_SPACE

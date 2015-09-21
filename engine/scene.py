@@ -15,9 +15,11 @@ class Scene(object):
     """
     :type objects: dict[int, GameObject]
     :type camera: GameObject
+    :type interface: engine.interface.UIElement
     :type dt: float
     :type time: float
-    :type game: Application
+    :type game: engine.application.Application
+    :type objects_spawn_queue: list
     """
     def __init__(self, game):
         self.objects = collections.OrderedDict()
@@ -29,6 +31,8 @@ class Scene(object):
 
         self._maxIndex = 0
         self._current_collisions = set()
+
+        self.interface = None
 
     def add_object(self, obj):
         """
@@ -87,6 +91,9 @@ class Scene(object):
                 obj.start()
 
             obj.update()
+
+        if self.interface:
+            self.interface.update()
 
     def simulate_postframe(self):
         """

@@ -28,6 +28,8 @@ class Scene(object):
         self.time = 0
         self.game = game
         self.objects_spawn_queue = []
+        self._remove_queue = []
+
 
         self._maxIndex = 0
         self._current_collisions = set()
@@ -64,9 +66,9 @@ class Scene(object):
         if obj in self.objects_spawn_queue:
             self.objects_spawn_queue.remove(obj)
         else:
+            obj = self.objects[obj.id]
             del self.objects[obj.id]
-            obj.scene = None
-            obj.id = None
+            self._remove_queue.append(obj)
 
     def setup_frame(self, dt):
         """
@@ -102,6 +104,10 @@ class Scene(object):
         for obj in list(self.objects.values()):
             obj.update_postframe()
 
+        for obj in self._remove_queue:
+            obj.scene = None
+            obj.id = None
+
     def get_object_of_type(self, component_type):
         """
         Finds the first instance of an component of the specified type attached to an object
@@ -121,9 +127,10 @@ class Scene(object):
         """
         ret = []
         for key, obj in self.objects.items():
-            component = obj.get_component(component_type)
-            if component is not None:
-                ret.append(component)
+            if not obj.marked_for_deletion:
+                component = obj.get_component(component_type)
+                if component is not None:
+                    ret.append(component)
         return ret
 
     def get_object_by_name(self, name):
@@ -142,9 +149,10 @@ class Scene(object):
         :return: List of game objects
         """
         ret = []
-        for key,obj in self.objects.items():
-            if obj.name == name:
-                ret.append(obj)
+        for key, obj in self.objects.items():
+            if not obj.marked_for_deletion:
+                if obj.name == name:
+                    ret.append(obj)
         return ret
 
     def _add_awaiting_objects(self):

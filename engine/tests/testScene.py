@@ -96,6 +96,25 @@ class TestSceneObjects(unittest.TestCase):
         self.assertEqual(len(objects) - cut, len(scene.objects))
         self.assertSetEqual(set(objects[cut:]), set(scene.objects.values()))
 
+    def test_removed_objects_are_cleared_on_frame_end(self):
+        scene = Scene(None)
+        objects = [GameObject() for x in range(0, 100)]
+        for obj in objects:
+            scene.add_object(obj)
+
+        scene.setup_frame(1.0)
+        scene.simulate_preframe()
+        scene.simulate_postframe()
+
+        scene.remove_object(objects[0])
+
+        scene.setup_frame(1.0)
+        scene.simulate_preframe()
+        scene.simulate_postframe()
+
+        self.assertIsNone(objects[0].scene)
+        self.assertIsNone(objects[0].id)
+
     def test_find_first_of_type(self):
         scene = Scene(None)
         first = GameObject(components.Camera())

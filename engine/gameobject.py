@@ -8,6 +8,7 @@ class GameObject(object):
         self.id = None
         self.name = None
         self.started = False
+        self.marked_for_deletion = False
 
         self.add_components(*components)
 
@@ -18,11 +19,15 @@ class GameObject(object):
         return hash(self.id) * hash(self.name)
 
     def destroy(self):
-        for cmp in self.components:
-            cmp.destroy()
-        if self.scene is not None:
-            self.scene.remove_object(self)
-        cmp = []
+        """
+        Marks object for deletion and calls the components' destroy() method
+        """
+        if not self.marked_for_deletion:
+            self.marked_for_deletion = True
+            for cmp in self.components:
+                cmp.destroy()
+            if self.scene is not None:
+                self.scene.remove_object(self)
 
     def add_components(self, *components):
         """

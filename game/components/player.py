@@ -45,9 +45,8 @@ class Player(Character):
                 self.damage(1)
 
     def damage(self, amount):
-        scene = self.scene
         super(Player, self).damage(amount)
-        scene.interface.process_event({"name": "player_damaged", "lives": self.health})
+        self.scene.interface.process_event({"name": "player_damaged", "lives": self.health})
 
     def _handle_input(self):
         dt = self.game_object.scene.dt

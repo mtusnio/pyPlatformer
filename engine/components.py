@@ -457,16 +457,16 @@ class TiledMap(Renderable):
 
         return True
 
-    def get_tile_for_position(self, position, extrapolate=False):
+    def get_tile_for_position(self, position):
         """
-        Returns x/y tile coordinates for specified world position
+        Returns x/y tile coordinates for specified world position.
 
         :param Vector2 position: World position
         :param bool extrapolate: If set to True it will return return potential out of bound tiles
-        :return: Tuple containing x/y coordinates
+        :return: Tuple containing x/y coordinates, None if position is out of map
         """
-        if extrapolate is not True and not self.is_position_in_map(position):
-            raise ValueError(self.__format_out_of_position(position[0], position[1]))
+        if not self.is_position_in_map(position):
+            return None
 
         relative_position = position - self.game_object.transform.position
         return self._get_tile_tuple(int(relative_position[0] // self.map.tilewidth),
@@ -482,7 +482,11 @@ class TiledMap(Renderable):
         :param properties_values: Filter tiles by properties and their respective values
         :return list: List of all found tiles in right-down format
         """
-        top_left = self.get_tile_for_position(area.topleft, extrapolate)
+        top_left = self.get_tile_for_position(area.topleft)
+
+        if top_left is None:
+            return []
+
         # Bottom and right side should always be excluded
         bottom_right_vec = Vector2(area.bottomright[0], area.bottomright[1])
         if int(bottom_right_vec.x) == bottom_right_vec.x:
@@ -490,7 +494,7 @@ class TiledMap(Renderable):
         if int(bottom_right_vec.y) == bottom_right_vec.y:
             bottom_right_vec.y -= 0.3
 
-        bottom_right = self.get_tile_for_position(bottom_right_vec, extrapolate)
+        bottom_right = self.get_tile_for_position(bottom_right_vec)
 
         ret = []
         for x in range(top_left[0], bottom_right[0] + 1):
@@ -508,9 +512,10 @@ class TiledMap(Renderable):
         Returns a rectangle which covers the tile at provided coordinates
 
         :param tuple tile: Tuple containing x/y coordinates
+        :returns: Rectangle, None if position out of map
         """
         if not self.is_tile_in_map(tile):
-            raise ValueError(self.__format_out_of_position(x, y))
+            return None
 
         x = tile[0]
         y = tile[1]

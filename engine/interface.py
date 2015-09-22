@@ -192,6 +192,12 @@ class SpriteGroup(SpriteElement):
         """
         Rebuilds the sprites after its properties have changed
         """
+        if self.visible_count == 0:
+            self.sprite = pygame.Surface((0, 0), pygame.SRCALPHA, 32)
+            self.width = 0
+            self.height = 0
+            return
+
         self._construct_sprite()
 
         x = 0
@@ -217,10 +223,6 @@ class SpriteGroup(SpriteElement):
             self.sprite.blit(pygame.transform.scale(info[0], (info[1], info[2])), (x, y))
 
     def _construct_sprite(self):
-        if self.visible_count == 0:
-            self.sprite = pygame.Surface((0, 0), pygame.SRCALPHA, 32)
-            return
-
         visible = self._images[:self.visible_count]
         spacing_size = max((len(visible) - 1) * self.spacing, 0)
         if self.horizontal:
